@@ -1,10 +1,12 @@
 package data2;
 
-class EmptySet implements FiniteSet {
+class EmptySet<T extends Comparable> implements FiniteSet<T>, Sequenced<T> {
 
-    EmptySet() {
+    // constructor for only possibility
+    public void EmptySet() {
     }
 
+    // old 
     public static FiniteSet empty() {
         return new EmptySet();
     }
@@ -17,16 +19,16 @@ class EmptySet implements FiniteSet {
         return true;
     }
 
-    public boolean member(int elt) {
+    public boolean member(T elt) {
         return false;
     }
 
-    public FiniteSet add(int elt) {
-        return new FullSet(elt, new EmptySet(), new EmptySet());
+    public FiniteSet add(T elt) {
+        return new FullSet(elt);
     }
 
-    public FiniteSet remove(int elt) {
-        return new EmptySet();
+    public FiniteSet remove(T elt) {
+        return this;
     }
 
     public FiniteSet union(FiniteSet u) {
@@ -34,7 +36,7 @@ class EmptySet implements FiniteSet {
     }
 
     public FiniteSet inter(FiniteSet u) {
-        return new EmptySet();
+        return this;
     }
 
     public FiniteSet diff(FiniteSet u) {
@@ -49,9 +51,24 @@ class EmptySet implements FiniteSet {
         return true;
     }
 
-    @Override
-    public int compareTo(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    // new
+    public int getCount(T elt) {
+        return 0;
     }
 
+    public FiniteSet addSome(T elt, int i) {
+        return new FullSet(elt, i);
+    }
+
+    public FiniteSet removeSome(T elt, int i) {
+        return this;
+    }
+
+    public FiniteSet removeAll(T elt) {
+        return this;
+    }
+
+    public Sequence<T> seq() {
+        return new EmptySeq();
+    }
 }

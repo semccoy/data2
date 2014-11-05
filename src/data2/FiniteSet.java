@@ -1,16 +1,17 @@
 package data2;
 
-public interface FiniteSet {
+public interface FiniteSet<T extends Comparable> extends Sequenced<T> {
 
+    // old
     public int cardinality();
 
     public boolean isEmptyHuh();
 
-    public boolean member(int elt);
+    public boolean member(T elt);
 
-    public FiniteSet add(int elt);
+    public FiniteSet add(T elt);
 
-    public FiniteSet remove(int elt);
+    public FiniteSet remove(T elt);
 
     public FiniteSet union(FiniteSet u);
 
@@ -22,4 +23,16 @@ public interface FiniteSet {
 
     public boolean subset(FiniteSet u);
 
+    // new
+    public int getCount(T elt);
+
+    public FiniteSet addSome(T elt, int i);
+
+    public FiniteSet removeSome(T elt, int i);
+
+    public FiniteSet removeAll(T elt);
+
+    public Sequence<T> seq();
+
+    // rb tree methods here
 }

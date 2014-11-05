@@ -2,81 +2,114 @@ package data2;
 
 import java.util.Random;
 
-class FullSet implements FiniteSet {
+class FullSet<T extends Comparable> implements FiniteSet<T>, Sequenced<T> {
 
-    int node;
+    T thing;
+    int counter;
     FiniteSet left;
     FiniteSet right;
 
-    FullSet(int node, FiniteSet left, FiniteSet right) {
-        this.node = node;
+    // constructors for different possibilities
+    public FullSet(T thing) {
+        this.thing = thing;
+        this.counter = 1;
+        this.left = empty();
+        this.right = empty();
+    }
+
+    public FullSet(T thing, int counter) {
+        this.thing = thing;
+        this.counter = counter;
+        this.left = empty();
+        this.right = empty();
+    }
+
+    public FullSet(T thing, FiniteSet left, FiniteSet right) {
+        this.thing = thing;
+        this.counter = 1;
         this.left = left;
         this.right = right;
     }
 
+    public FullSet(T thing, int counter, FiniteSet left, FiniteSet right) {
+        this.thing = thing;
+        this.counter = counter;
+        this.left = left;
+        this.right = right;
+    }
+
+    // multiset methods
     public static FiniteSet empty() {
         return new EmptySet();
     }
 
     public int cardinality() {
-        return left.cardinality() + 1 + right.cardinality();
+        return counter + this.left.cardinality() + this.right.cardinality();
     }
 
     public boolean isEmptyHuh() {
-        return false;
+        if (this.getCount(thing) == 0) {
+            if (!left.isEmptyHuh()) {
+                return right.isEmptyHuh();
+            } else {
+                return left.isEmptyHuh();
+            }
+        } else {
+            return false;
+        }
     }
 
-    public boolean member(int elt) {
-        if (this.node == elt) {
-            return true;
-        } else if (this.node > elt) {
+    public boolean member(T elt) {
+        if (this.thing.compareTo(elt) == 0) {
+            return this.counter > 0;
+        } else if (this.thing.compareTo(elt) > 0) {
             return left.member(elt);
         } else {
             return right.member(elt);
         }
     }
 
-    public FiniteSet add(int elt) {
-        if (this.node == elt) {
+    public FiniteSet add(T elt) {
+        if (this.thing.compareTo(elt) == 0) {
             return this;
         } else {
-            if (this.node > elt) {
-                return new FullSet(node, left.add(elt), right);
+            if (this.thing > elt) {
+                return new FullSet(thing, left.add(elt), right);
             } else {
-                return new FullSet(node, left, right.add(elt));
+                return new FullSet(thing, left, right.add(elt));
             }
         }
     }
 
     public FiniteSet union(FiniteSet u) {
-        return this.left.union(u.union(right).add(this.node));
+        return this.left.union(u.union(right).add(this.thing));
     }
 
-    public FiniteSet remove(int elt) {
-        if (node == elt) {
+    public FiniteSet remove(T elt) {
+        if (thing == elt) {
             return right.union(left);
-        } else if (node > elt) {
-            return new FullSet(node, left, right.remove(elt));
+        } else if (thing > elt) {
+            return new FullSet(thing, left, right.remove(elt));
         } else {
-            return new FullSet(node, left.remove(elt), right);
+            return new FullSet(thing, left.remove(elt), right);
         }
     }
 
     public FiniteSet inter(FiniteSet u) {
         //if in the set, put in inter
-        if (u.member(node)) {
-            return new FullSet(node, this.left.inter(u), this.right.inter(u));
-        } //if not in the set, remove node from inter
+        if (u.member(thing)) {
+            return new FullSet(thing, this.left.inter(u), this.right.inter(u));
+        } //if not in the set, remove thing from inter
         else {
-            return this.remove(node).inter(u);
+            return this.remove(thing).inter(u);
         }
     }
 
     public FiniteSet diff(FiniteSet u) {
         //returns things different between existing FiniteSet and u
         //so if is a member, we want to remove it
-        if (u.member(node)) {
-            return this.left.union(this.right).diff(u.remove(this.node));
+        if (u.member(thing)) {
+            return this.left.union(this.right).diff(u.remove(this.thing));
         } //and if not, we don't need to remove it
         else {
             return this.left.union(this.right).diff(u);
@@ -84,15 +117,21 @@ class FullSet implements FiniteSet {
     }
 
     public boolean subset(FiniteSet u) {
-        return (left.subset(u) && u.member(node) && right.subset(u));
+        return (left.subset(u) && u.member(thing) && right.subset(u));
     }
 
     public boolean equal(FiniteSet u) {
         return (this.subset(u) && u.subset(this));
     }
 
-    @Override
-    public int compareTo(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int getCount(T elt) {
+        if (this.thing.compareTo(elt) == 0) {
+            return counter;
+        } else if (this.thing.compareTo(elt) > 0) {
+            return left.getCount(elt);
+        } else {
+            return right.getCount(elt);
+        }
     }
+
 }
