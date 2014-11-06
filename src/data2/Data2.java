@@ -4,23 +4,23 @@ import static data2.Tests.*;
 
 public class Data2 {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         System.out.println("random int checker - " + randInt(0, 100) + " " + randInt(0, 100) + " " + randInt(0, 100));
-//        FiniteSet mt = new EmptySet();
-//        FiniteSet bst0 = createFiniteSet(1);
-//        FiniteSet bst6 = createFiniteSet(7);
-//
-//        int adNauseum = 1; //repeats all tests this many times
-//        for (int i = 0; i < adNauseum; i++) {
-//
-//            // System.out.println("\nemptyCardCheck:");
-//            isEmptyHuhCardCheck(mt);
-//            isEmptyHuhCardCheck(bst0);
-//            isEmptyHuhCardCheck(bst6);
-//            isEmptyHuhCardCheck(createFiniteSet(randInt(0, 10)));
-//            isEmptyHuhCardCheck(createFiniteSet(randInt(0, 10)));
-//            isEmptyHuhCardCheck(createFiniteSet(randInt(0, 10)));
+
+        int adNauseum = 1; //repeats all tests this many times
+        for (int i = 0; i < adNauseum; i++) {
+
+            Tests determinedInt = new Tests(new RandomInteger());
+            Tests determinedString = new Tests(new RandomString());
+
+            
+            int randomInt = randInt(0, 1);
+        determinedInt.isEmptyHuhCardCheck(randomInt);
+        determinedString.isEmptyHuhCardCheck(randomInt);
+            
+        // etc
+
 //
 //            //  System.out.println("\ncardAddCheck:");
 //            cardAddCheck(0);
@@ -63,8 +63,8 @@ public class Data2 {
 //            addUnionRemoveInterEqualCheck(createFiniteSet(randInt(0, 10)), createFiniteSet(randInt(0, 10)));
 //            addUnionRemoveInterEqualCheck(createFiniteSet(randInt(0, 10)), createFiniteSet(randInt(0, 10)));
 //            addUnionRemoveInterEqualCheck(createFiniteSet(randInt(0, 10)), createFiniteSet(randInt(0, 10)));
-//
-//            System.out.println("all tests passed");
-//        }
+
+            System.out.println("all tests passed");
+        }
     }
 }
