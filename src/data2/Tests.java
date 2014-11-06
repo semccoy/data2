@@ -244,8 +244,55 @@ public class Tests<T extends Comparable> {
         }
     }
 
+    public void addMemberInterCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            T randomThing = rt.makeRandom();
+            FiniteSet fs1 = randomFiniteSet(length);
+            FiniteSet fs2 = randomFiniteSet(length);
+            FiniteSet fs1Plus = fs1.add(randomThing);
+            FiniteSet fs2Plus = fs2.add(randomThing);
+            // we've already tested that adding worksin addMemberCheck() so not re-testing here
+            if (fs1Plus.member(randomThing) && fs2Plus.member(randomThing)
+                    && fs1Plus.inter(fs2Plus).isEmptyHuh()) {
+                throw new Exception("addMemberInterCheck - thing in two bags not intersection properly");
+            }
+        }
+    }
+
+    public void diffEqualCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs1 = randomFiniteSet(length);
+            FiniteSet fs2 = randomFiniteSet(length);
+            if (fs1.diff(fs2).isEmptyHuh() && fs2.diff(fs1).isEmptyHuh() && !fs1.equal(fs2)) {
+                throw new Exception("diffEqualCheck - things with no diff not seen as equal");
+            } else if (fs1.equal(fs2) && !fs1.diff(fs2).isEmptyHuh() && !fs2.diff(fs1).isEmptyHuh()) {
+                throw new Exception("diffEqualCheck - equal things not seen as having no diff");
+            }
+        }
+    }
+
+    public void addUnionRemoveInterEqualCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            T randomThing = rt.makeRandom();
+            FiniteSet s1 = randomFiniteSet(length); // u
+            FiniteSet s2 = randomFiniteSet(length); // v
+            FiniteSet fs1 = s1.add(randomThing); // u + T
+            FiniteSet fs2 = s2.add(randomThing); // v + T
+            FiniteSet unionSet = fs1.union(fs2); // u + v + T
+            FiniteSet removeSet = unionSet.remove(randomThing); // u + v
+            FiniteSet interSet = fs1.inter(fs2); // T
+            FiniteSet connectSet = removeSet.union(interSet); // u + v + T
+            FiniteSet uiSet = interSet.union(s1).union(s2); // u + v + T
+            if (!unionSet.equal(uiSet) || !unionSet.equal(connectSet) || !connectSet.equal(uiSet)) {
+                throw new Exception("addUnionRemoveInterEqualCheck - same bags not equal");
+            }
+        }
+    }
+
     // c/o bryce - mostly just checking to see how these work :)
-    
     public void countItCardCheck() throws Exception {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
@@ -261,81 +308,6 @@ public class Tests<T extends Comparable> {
             int length = randInt(0, maxRandomSize);
             FiniteSet fs = randomFiniteSet(length);
             System.out.println("Sequencing Output: " + fs.toStringIt());
-        }
-    }
-
-    ////////////
-    
-    
-    //the intersection of 2 sets cannot be empty if 
-    //both of those 2 sets contain the thing
-    public static void memberInterCheck(FiniteSet u, FiniteSet v, int elt) {
-        u = u.add(elt);
-        v = v.add(elt);
-        if (u.member(elt) && v.member(elt)) {
-            if (!u.inter(v).isEmptyHuh()) {
-                //  System.out.println("Success - memberInterCheck");
-            } else {
-                System.out.println("Failure - memberInterCheck");
-            }
-        } else {
-            System.out.println("Can't touch this");
-        }
-    }
-
-    //four things:
-    //1 - if the difference between 2 sets is empty, they are equal
-    //2 - if 2 sets are different, they are not equal
-    //3 - and vice versa
-    //4 -  " " 
-    public static void diffEqualCheck(FiniteSet u, FiniteSet v) {
-        if ((u.diff(v)).isEmptyHuh() && (v.diff(u)).isEmptyHuh()) {
-            if (u.equal(v)) {
-                //   System.out.println("Success - diffEqualCheck pt1");
-            } else {
-                System.out.println("Failure - diffEqualCheck pt1");
-            }
-        } else if (!u.equal(v)) {
-            //   System.out.println("Success - diffEqualCheck pt1.2");
-        } else {
-            System.out.println("Failure - diffEqualCheck pt1.2");
-        }
-        //vice versa
-        if (u.equal(v)) {
-            if (u.diff(v).isEmptyHuh() && v.diff(u).isEmptyHuh()) {
-                //     System.out.println("Success - diffEqualCheck pt2");
-            } else {
-                System.out.println("Failure - diffEqualCheck pt2");
-            }
-        } else if (!u.diff(v).isEmptyHuh()
-                || !v.diff(u).isEmptyHuh()) {
-            //    System.out.println("Success - diffEqualCheck pt2.2");
-        } else {
-            System.out.println("Failure - diffEqualCheck pt2.2");
-        }
-    }
-
-    //add one thing that is to u and v that is either
-    //already within or outside of both of them to being with, then if:
-    //unioning them = u + v + elt,
-    //removing elt from them = u + v,
-    //interesting them = elt,
-    //unioning elt and u + v = u + v + elt
-    //and the union of the intersects of the original sets = u + v + elt,
-    //then all the u + v + elt sets are equal
-    public static void addUnionRemoveInterEqualCheck(FiniteSet u, FiniteSet v) {
-        int elt = randInt(0, 200);
-        FiniteSet u2 = u.add(elt);
-        FiniteSet v2 = v.add(elt);
-        FiniteSet unionSet = u2.union(v2); // u + v + elt
-        FiniteSet removeSet = unionSet.remove(elt); // u + v
-        FiniteSet interSet = u2.inter(v2); // elt
-        FiniteSet connectSet = removeSet.union(interSet); // u + v + elt
-        FiniteSet uiSet = interSet.union(u).union(v); // u + v + elt
-        if (unionSet.equal(uiSet) && unionSet.equal(connectSet)) { // all equal
-            //   System.out.println("Success - addUnionRemoveInterEqualCheck");
-        } else {
-            System.out.println("Failure - addUnionRemoveInterEqualCheck");
         }
     }
 }
