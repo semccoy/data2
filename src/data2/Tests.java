@@ -31,7 +31,7 @@ public class Tests<T extends Comparable> {
     }
 
     // tests
-    int repeats = 100;
+    static int repeats = 100;
     int maxRandomSize = 10;
 
     public void isEmptyHuhCardCheck(int x) throws Exception {
@@ -72,7 +72,8 @@ public class Tests<T extends Comparable> {
             int initialCard = fs.cardinality();
             if (fs.addSome(rt.makeRandom(), x).cardinality() != initialCard + x) {
                 throw new Exception("cardAddSomeCheck - card increase failure");
-            } else if (fs.addSome(rt.makeRandom(), x).cardinality() == initialCard) {
+                // x != 0 is necessary in case we try to add zero things (then initialCard == finalCard)
+            } else if (x != 0 && fs.addSome(rt.makeRandom(), x).cardinality() == initialCard) {
                 throw new Exception("cardAddSomeCheck - adding things failure");
             }
         }
@@ -116,6 +117,22 @@ public class Tests<T extends Comparable> {
             }
             if (fs.getCount(randomThing) == 0 && fs.member(randomThing)) {
                 throw new Exception("addMemberCheck - thing added but counter not increase");
+            }
+        }
+    }
+    
+    public void addMemberInterCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            T randomThing = rt.makeRandom();
+            FiniteSet fs1 = randomFiniteSet(length);
+            FiniteSet fs2 = randomFiniteSet(length);
+            FiniteSet fs1Plus = fs1.add(randomThing);
+            FiniteSet fs2Plus = fs2.add(randomThing);
+            // we've already tested that adding worksin addMemberCheck() so not re-testing here
+            if (fs1Plus.member(randomThing) && fs2Plus.member(randomThing)
+                    && fs1Plus.inter(fs2Plus).isEmptyHuh()) {
+                throw new Exception("addMemberInterCheck - thing in two bags not intersection properly");
             }
         }
     }
@@ -222,9 +239,9 @@ public class Tests<T extends Comparable> {
         // check to see if the bags got... dismembered (*rimshot*)
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
-            FiniteSet fs1 = randomFiniteSet(length);
-            FiniteSet fs2 = randomFiniteSet(length);
             T randomThing = rt.makeRandom();
+            FiniteSet fs1 = randomFiniteSet(length).add(randomThing);
+            FiniteSet fs2 = randomFiniteSet(length);
             if (fs1.diff(fs2).member(randomThing)) {
                 if (!fs1.member(randomThing)) {
                     throw new Exception("diffMemberCheck - thing not put in bag correctly");
@@ -233,7 +250,23 @@ public class Tests<T extends Comparable> {
         }
     }
 
-    public void equalIntercheck() throws Exception {
+
+
+
+    public void diffEqualCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs1 = randomFiniteSet(length);
+            FiniteSet fs2 = randomFiniteSet(length);
+            if (fs1.diff(fs2).isEmptyHuh() && fs2.diff(fs1).isEmptyHuh() && !fs1.equal(fs2) && fs2.equal(fs1)) {
+                throw new Exception("diffEqualCheck - things with no diff not seen as equal");
+            } else if (fs1.equal(fs2) && !fs1.diff(fs2).isEmptyHuh() && !fs2.diff(fs1).isEmptyHuh()) {
+                throw new Exception("diffEqualCheck - equal things not seen as having no diff");
+            }
+        }
+    }
+    
+        public void equalIntercheck() throws Exception {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
             FiniteSet fs1 = randomFiniteSet(length);
@@ -244,70 +277,23 @@ public class Tests<T extends Comparable> {
         }
     }
 
-    public void addMemberInterCheck() throws Exception {
-        for (int i = 0; i < repeats; i++) {
-            int length = randInt(0, maxRandomSize);
-            T randomThing = rt.makeRandom();
-            FiniteSet fs1 = randomFiniteSet(length);
-            FiniteSet fs2 = randomFiniteSet(length);
-            FiniteSet fs1Plus = fs1.add(randomThing);
-            FiniteSet fs2Plus = fs2.add(randomThing);
-            // we've already tested that adding worksin addMemberCheck() so not re-testing here
-            if (fs1Plus.member(randomThing) && fs2Plus.member(randomThing)
-                    && fs1Plus.inter(fs2Plus).isEmptyHuh()) {
-                throw new Exception("addMemberInterCheck - thing in two bags not intersection properly");
-            }
-        }
-    }
-
-    public void diffEqualCheck() throws Exception {
-        for (int i = 0; i < repeats; i++) {
-            int length = randInt(0, maxRandomSize);
-            FiniteSet fs1 = randomFiniteSet(length);
-            FiniteSet fs2 = randomFiniteSet(length);
-            if (fs1.diff(fs2).isEmptyHuh() && fs2.diff(fs1).isEmptyHuh() && !fs1.equal(fs2)) {
-                throw new Exception("diffEqualCheck - things with no diff not seen as equal");
-            } else if (fs1.equal(fs2) && !fs1.diff(fs2).isEmptyHuh() && !fs2.diff(fs1).isEmptyHuh()) {
-                throw new Exception("diffEqualCheck - equal things not seen as having no diff");
-            }
-        }
-    }
-
-    public void addUnionRemoveInterEqualCheck() throws Exception {
-        for (int i = 0; i < repeats; i++) {
-            int length = randInt(0, maxRandomSize);
-            T randomThing = rt.makeRandom();
-            FiniteSet s1 = randomFiniteSet(length); // u
-            FiniteSet s2 = randomFiniteSet(length); // v
-            FiniteSet fs1 = s1.add(randomThing); // u + T
-            FiniteSet fs2 = s2.add(randomThing); // v + T
-            FiniteSet unionSet = fs1.union(fs2); // u + v + T
-            FiniteSet removeSet = unionSet.remove(randomThing); // u + v
-            FiniteSet interSet = fs1.inter(fs2); // T
-            FiniteSet connectSet = removeSet.union(interSet); // u + v + T
-            FiniteSet uiSet = interSet.union(s1).union(s2); // u + v + T
-            if (!unionSet.equal(uiSet) || !unionSet.equal(connectSet) || !connectSet.equal(uiSet)) {
-                throw new Exception("addUnionRemoveInterEqualCheck - same bags not equal");
-            }
-        }
-    }
-
-    // c/o bryce - mostly just checking to see how these work :)
-    public void countItCardCheck() throws Exception {
-        for (int i = 0; i < repeats; i++) {
-            int length = randInt(0, maxRandomSize);
-            FiniteSet fs = randomFiniteSet(length);
-            if (fs.countIt() != fs.cardinality()) {
-                throw new Exception("countItCardCheck - countIt ≠ card");
-            }
-        }
-    }
-
-    public void toStringItCheck() {
-        for (int i = 0; i < 5; i++) {
-            int length = randInt(0, maxRandomSize);
-            FiniteSet fs = randomFiniteSet(length);
-            System.out.println("Sequencing Output: " + fs.toStringIt());
-        }
-    }
+//    // these are just for visualizing sequences
+//    // c/o bryce - mostly just checking to see how these work :)
+//    public void countItCardCheck() throws Exception {
+//        for (int i = 0; i < repeats; i++) {
+//            int length = randInt(0, maxRandomSize);
+//            FiniteSet fs = randomFiniteSet(length);
+//            if (fs.countIt() != fs.cardinality()) {
+//                throw new Exception("countItCardCheck - countIt ≠ card");
+//            }
+//        }
+//    }
+//
+//    public void toStringItCheck() {
+//        for (int i = 0; i < 5; i++) {
+//            int length = randInt(0, maxRandomSize);
+//            FiniteSet fs = randomFiniteSet(length);
+//            System.out.println("Sequencing Output: " + fs.toStringIt());
+//        }
+//    }
 }

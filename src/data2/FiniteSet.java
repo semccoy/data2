@@ -34,7 +34,7 @@ public interface FiniteSet<T extends Comparable> extends Sequenced<T> {
 
     public Sequence<T> seq();
 
-    //others
+    // others - these are just for visualizing sequences (c/o bryce)
     public int countIt();
 
     public String toStringIt();
