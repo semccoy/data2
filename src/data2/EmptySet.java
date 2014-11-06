@@ -1,13 +1,13 @@
 package data2;
 
-class EmptySet<T extends Comparable> implements FiniteSet<T>, Sequenced<T> {
+public class EmptySet<T extends Comparable> implements FiniteSet<T>, Sequenced<T> {
 
     // constructor for only possibility
     public void EmptySet() {
     }
 
-    // old 
-    public static FiniteSet empty() {
+    // old methods
+    public FiniteSet empty() {
         return new EmptySet();
     }
 
@@ -51,7 +51,7 @@ class EmptySet<T extends Comparable> implements FiniteSet<T>, Sequenced<T> {
         return true;
     }
 
-    // new
+    // new methods
     public int getCount(T elt) {
         return 0;
     }
@@ -70,5 +70,18 @@ class EmptySet<T extends Comparable> implements FiniteSet<T>, Sequenced<T> {
 
     public Sequence<T> seq() {
         return new EmptySeq();
+    }
+    
+    // others
+    public int countIt(){
+        return 0;
+    }
+    
+    public String toStringIt() {
+        return toStringIts(this.seq());
+    }
+    
+    public String toStringIts(Sequence<T> as){
+        return "";
     }
 }

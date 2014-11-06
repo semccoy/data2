@@ -34,5 +34,10 @@ public interface FiniteSet<T extends Comparable> extends Sequenced<T> {
 
     public Sequence<T> seq();
 
+    //others
+    public int countIt();
+
+    public String toStringIt();
+
     // rb tree methods here
 }

@@ -20,14 +20,6 @@ public class Tests {
     }
 
     /* Testing */
-    //
-    //all operations checked at least once (most twice or more)
-    //
-    //fyi, i didn't check empty() anywhere since i feel like you can
-    //check isEmptyHuh() and get the same result...
-    //
-    //
-    //
     //if cardinality is 0, u must be empty; if not, u must not be empty
     public static void isEmptyHuhCardCheck(FiniteSet u) {
         if (u.cardinality() == 0) {
