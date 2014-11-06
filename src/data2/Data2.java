@@ -6,7 +6,7 @@ public class Data2 {
 
     public static void main(String[] args) throws Exception {
 
-        System.out.println("random int checker - " + randInt(0, 100) + " " + randInt(0, 100) + " " + randInt(0, 100));
+        System.out.println("Random Int Checker - " + randInt(0, 100) + " " + randInt(0, 100) + " " + randInt(0, 100));
 
         int adNauseum = 10; //repeats all tests this many times
         for (int i = 0; i < adNauseum; i++) {
@@ -91,5 +91,6 @@ public class Data2 {
         System.out.println("diffMemberCheck()");
         System.out.println("diffEqualCheck()");
         System.out.println("equalIntercheck()");
+        System.out.println("");
     }
 }

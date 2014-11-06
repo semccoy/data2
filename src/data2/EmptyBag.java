@@ -1,14 +1,14 @@
 package data2;
 
-public class EmptySet<T extends Comparable> implements FiniteSet<T>, Sequenced<T> {
+public class EmptyBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> {
 
     // constructor for only possibility
-    public void EmptySet() {
+    public void EmptyBag() {
     }
 
     // old methods
-    public FiniteSet empty() {
-        return new EmptySet();
+    public MultiSet empty() {
+        return new EmptyBag();
     }
 
     public int cardinality() {
@@ -23,31 +23,31 @@ public class EmptySet<T extends Comparable> implements FiniteSet<T>, Sequenced<T
         return false;
     }
 
-    public FiniteSet add(T elt) {
-        return new FullSet(elt);
+    public MultiSet add(T elt) {
+        return new FullBag(elt);
     }
 
-    public FiniteSet remove(T elt) {
+    public MultiSet remove(T elt) {
         return this;
     }
 
-    public FiniteSet union(FiniteSet u) {
+    public MultiSet union(MultiSet u) {
         return u;
     }
 
-    public FiniteSet inter(FiniteSet u) {
+    public MultiSet inter(MultiSet u) {
         return this;
     }
 
-    public FiniteSet diff(FiniteSet u) {
+    public MultiSet diff(MultiSet u) {
         return u;
     }
 
-    public boolean equal(FiniteSet u) {
+    public boolean equal(MultiSet u) {
         return u.isEmptyHuh();
     }
 
-    public boolean subset(FiniteSet u) {
+    public boolean subset(MultiSet u) {
         return true;
     }
 
@@ -56,15 +56,15 @@ public class EmptySet<T extends Comparable> implements FiniteSet<T>, Sequenced<T
         return 0;
     }
 
-    public FiniteSet addSome(T elt, int i) {
-        return new FullSet(elt, i);
+    public MultiSet addSome(T elt, int i) {
+        return new FullBag(elt, i);
     }
 
-    public FiniteSet removeSome(T elt, int i) {
+    public MultiSet removeSome(T elt, int i) {
         return this;
     }
 
-    public FiniteSet removeAll(T elt) {
+    public MultiSet removeAll(T elt) {
         return this;
     }
 

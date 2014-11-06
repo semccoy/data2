@@ -6,7 +6,7 @@ public class FullSeq<T extends Comparable> implements Sequence<T>, Sequenced<T> 
     int counter;
     Sequence<T> nextThing;
 
-    // so we can use this down below and in FullSet
+    // so we can use this down below and in FullBag
     FullSeq(T thing, int counter, Sequence<T> nextThing) {
         this.thing = thing;
         this.counter = counter;

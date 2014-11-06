@@ -11,8 +11,8 @@ public class Tests<T extends Comparable> {
         this.rt = rt;
     }
 
-    public static FiniteSet empty() {
-        return new EmptySet();
+    public static MultiSet empty() {
+        return new EmptyBag();
     }
 
     public static int randInt(int min, int max) {
@@ -21,12 +21,12 @@ public class Tests<T extends Comparable> {
         return randomNum;
     }
 
-    public FiniteSet<T> randomFiniteSet(int size) {
+    public MultiSet<T> randomMultiSet(int size) {
         // just a generic version of what we had with finite sets
         if (size == 0) {
             return empty();
         } else {
-            return randomFiniteSet(size - 1).addSome(rt.makeRandom(), randInt(1, maxRandomSize));
+            return randomMultiSet(size - 1).addSome(rt.makeRandom(), randInt(1, maxRandomSize));
         }
     }
 
@@ -37,13 +37,13 @@ public class Tests<T extends Comparable> {
     public void isEmptyHuhCardCheck(int x) throws Exception {
         for (int i = 0; i < repeats; i++) {
             if (x == 0) {
-                FiniteSet fs = empty();
+                MultiSet fs = empty();
                 if (!fs.isEmptyHuh()) {
                     throw new Exception("isEmptyHuhCardCheck - empty bag failure");
                 }
             } else {
                 int length = randInt(1, maxRandomSize);
-                FiniteSet fs = randomFiniteSet(length);
+                MultiSet fs = randomMultiSet(length);
                 if (fs.isEmptyHuh()) {
                     throw new Exception("isEmptyHuhCardCheck - full bag failure");
                 }
@@ -54,7 +54,7 @@ public class Tests<T extends Comparable> {
     public void cardAddCheck() throws Exception {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
-            FiniteSet fs = randomFiniteSet(length);
+            MultiSet fs = randomMultiSet(length);
             int init = fs.cardinality();
             if (fs.add(rt.makeRandom()).cardinality() != init + 1) {
                 throw new Exception("cardAddCheck - card increase failure");
@@ -68,7 +68,7 @@ public class Tests<T extends Comparable> {
         // mostly a check that add/removeSome functions work, really just same as above
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
-            FiniteSet fs = randomFiniteSet(length);
+            MultiSet fs = randomMultiSet(length);
             int initialCard = fs.cardinality();
             if (fs.addSome(rt.makeRandom(), x).cardinality() != initialCard + x) {
                 throw new Exception("cardAddSomeCheck - card increase failure");
@@ -83,7 +83,7 @@ public class Tests<T extends Comparable> {
         for (int i = 0; i < repeats; i++) {
             T randomThing = rt.makeRandom();
             int length = randInt(0, maxRandomSize);
-            FiniteSet fs = randomFiniteSet(length);
+            MultiSet fs = randomMultiSet(length);
             int endCard = fs.remove(randomThing).cardinality();
             if (fs.getCount(randomThing) >= 1 && endCard != fs.cardinality() - 1) {
                 throw new Exception("cardRemoveCheck - card decrease failure");
@@ -97,7 +97,7 @@ public class Tests<T extends Comparable> {
     public void cardEmptyCheck() throws Exception {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
-            FiniteSet fs = randomFiniteSet(length);
+            MultiSet fs = randomMultiSet(length);
             if (fs.isEmptyHuh() && fs.cardinality() != 0) {
                 throw new Exception("cardEmptyCheck - empty bag has card ≠ 0");
             } else if (!fs.isEmptyHuh() && fs.cardinality() == 0) {
@@ -110,7 +110,7 @@ public class Tests<T extends Comparable> {
         for (int i = 0; i < repeats; i++) {
             T randomThing = rt.makeRandom();
             int length = randInt(0, maxRandomSize);
-            FiniteSet fs = randomFiniteSet(length);
+            MultiSet fs = randomMultiSet(length);
             fs.add(randomThing);
             if (fs.getCount(randomThing) >= 1 && !fs.member(randomThing)) {
                 throw new Exception("addMemberCheck - thing not added but counter increase");
@@ -125,10 +125,10 @@ public class Tests<T extends Comparable> {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
             T randomThing = rt.makeRandom();
-            FiniteSet fs1 = randomFiniteSet(length);
-            FiniteSet fs2 = randomFiniteSet(length);
-            FiniteSet fs1Plus = fs1.add(randomThing);
-            FiniteSet fs2Plus = fs2.add(randomThing);
+            MultiSet fs1 = randomMultiSet(length);
+            MultiSet fs2 = randomMultiSet(length);
+            MultiSet fs1Plus = fs1.add(randomThing);
+            MultiSet fs2Plus = fs2.add(randomThing);
             // we've already tested that adding worksin addMemberCheck() so not re-testing here
             if (fs1Plus.member(randomThing) && fs2Plus.member(randomThing)
                     && fs1Plus.inter(fs2Plus).isEmptyHuh()) {
@@ -141,9 +141,9 @@ public class Tests<T extends Comparable> {
         for (int i = 0; i < repeats; i++) {
             T randomThing = rt.makeRandom();
             int length = randInt(0, maxRandomSize);
-            FiniteSet fs = randomFiniteSet(length);
-            FiniteSet fsPlus = fs.add(randomThing);
-            FiniteSet fsMinus = fsPlus.remove(randomThing);
+            MultiSet fs = randomMultiSet(length);
+            MultiSet fsPlus = fs.add(randomThing);
+            MultiSet fsMinus = fsPlus.remove(randomThing);
             if (fsPlus.getCount(randomThing) - 1 != fs.getCount(randomThing)) {
                 throw new Exception("addRemoveEqualCheck - counter not increase after adding thing");
             }
@@ -161,9 +161,9 @@ public class Tests<T extends Comparable> {
         for (int i = 0; i < repeats; i++) {
             T randomThing = rt.makeRandom();
             int length = randInt(0, maxRandomSize);
-            FiniteSet fs = randomFiniteSet(length);
-            FiniteSet fsPlus = fs.addSome(randomThing, x);
-            FiniteSet fsMinus = fsPlus.removeSome(randomThing, x);
+            MultiSet fs = randomMultiSet(length);
+            MultiSet fsPlus = fs.addSome(randomThing, x);
+            MultiSet fsMinus = fsPlus.removeSome(randomThing, x);
             // maybe - x + 1?
             if (fsPlus.getCount(randomThing) - x != fs.getCount(randomThing)) {
                 throw new Exception("addRemoveSomeEqualCheck - counter not increase after adding things");
@@ -180,8 +180,8 @@ public class Tests<T extends Comparable> {
     public void unionSubsetCheck() throws Exception {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
-            FiniteSet fs1 = randomFiniteSet(length);
-            FiniteSet fs2 = randomFiniteSet(length);
+            MultiSet fs1 = randomMultiSet(length);
+            MultiSet fs2 = randomMultiSet(length);
             // could reverse order of these
             if (!fs1.subset(fs1.union(fs2)) || !fs2.subset(fs1.union(fs2))) {
                 throw new Exception("unionSubsetCheck - one bag not subset of two bags' union");
@@ -193,8 +193,8 @@ public class Tests<T extends Comparable> {
         // this sounds like something state employees have to do :(
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
-            FiniteSet fs1 = randomFiniteSet(length);
-            FiniteSet fs2 = randomFiniteSet(length);
+            MultiSet fs1 = randomMultiSet(length);
+            MultiSet fs2 = randomMultiSet(length);
             // strictly greater than because fs1 and fs2 can be mutually exclusive to start
             if (fs1.union(fs2).cardinality() > fs1.cardinality() + fs2.cardinality()) {
                 throw new Exception("unionCardCheck - card not adding properly");
@@ -207,12 +207,12 @@ public class Tests<T extends Comparable> {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
             T randomThing = rt.makeRandom();
-            FiniteSet fs1 = randomFiniteSet(length);
-            FiniteSet fs2 = randomFiniteSet(length);
-            FiniteSet fs1Plus = fs1.add(randomThing);
-            FiniteSet fs2Plus = fs2.add(randomThing);
-            FiniteSet u1 = (fs1Plus.union(fs2Plus));
-            FiniteSet u2 = (fs2Plus.union(fs1Plus));
+            MultiSet fs1 = randomMultiSet(length);
+            MultiSet fs2 = randomMultiSet(length);
+            MultiSet fs1Plus = fs1.add(randomThing);
+            MultiSet fs2Plus = fs2.add(randomThing);
+            MultiSet u1 = (fs1Plus.union(fs2Plus));
+            MultiSet u2 = (fs2Plus.union(fs1Plus));
             if (!u1.member(randomThing) && !u2.member(randomThing)) {
                 throw new Exception("unionMemberCheck - unions not membering properly");
             }
@@ -224,8 +224,8 @@ public class Tests<T extends Comparable> {
             T randomThing = rt.makeRandom();
             int length = randInt(0, maxRandomSize);
             int randomInt = randInt(0, 10);
-            FiniteSet fs1 = randomFiniteSet(length);
-            FiniteSet fs2 = fs1.addSome(randomThing, randomInt);
+            MultiSet fs1 = randomMultiSet(length);
+            MultiSet fs2 = fs1.addSome(randomThing, randomInt);
             if (fs2.removeAll(randomThing).member(randomThing)) {
                 throw new Exception("memberRemoveAllCheck - thing in bag that was removeAlled");
             }
@@ -240,8 +240,8 @@ public class Tests<T extends Comparable> {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
             T randomThing = rt.makeRandom();
-            FiniteSet fs1 = randomFiniteSet(length).add(randomThing);
-            FiniteSet fs2 = randomFiniteSet(length);
+            MultiSet fs1 = randomMultiSet(length).add(randomThing);
+            MultiSet fs2 = randomMultiSet(length);
             if (fs1.diff(fs2).member(randomThing)) {
                 if (!fs1.member(randomThing)) {
                     throw new Exception("diffMemberCheck - thing not put in bag correctly");
@@ -256,8 +256,8 @@ public class Tests<T extends Comparable> {
     public void diffEqualCheck() throws Exception {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
-            FiniteSet fs1 = randomFiniteSet(length);
-            FiniteSet fs2 = randomFiniteSet(length);
+            MultiSet fs1 = randomMultiSet(length);
+            MultiSet fs2 = randomMultiSet(length);
             if (fs1.diff(fs2).isEmptyHuh() && fs2.diff(fs1).isEmptyHuh() && !fs1.equal(fs2) && fs2.equal(fs1)) {
                 throw new Exception("diffEqualCheck - things with no diff not seen as equal");
             } else if (fs1.equal(fs2) && !fs1.diff(fs2).isEmptyHuh() && !fs2.diff(fs1).isEmptyHuh()) {
@@ -269,8 +269,8 @@ public class Tests<T extends Comparable> {
         public void equalIntercheck() throws Exception {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
-            FiniteSet fs1 = randomFiniteSet(length);
-            FiniteSet fs2 = randomFiniteSet(length);
+            MultiSet fs1 = randomMultiSet(length);
+            MultiSet fs2 = randomMultiSet(length);
             if (fs1.union(fs2).equal(fs1.inter(fs2)) && !fs1.equal(fs2)) {
                 throw new Exception("equalIntercheck - inter and equal of two different bags can't be the same");
             }
@@ -282,7 +282,7 @@ public class Tests<T extends Comparable> {
 //    public void countItCardCheck() throws Exception {
 //        for (int i = 0; i < repeats; i++) {
 //            int length = randInt(0, maxRandomSize);
-//            FiniteSet fs = randomFiniteSet(length);
+//            MultiSet fs = randomMultiSet(length);
 //            if (fs.countIt() != fs.cardinality()) {
 //                throw new Exception("countItCardCheck - countIt ≠ card");
 //            }
@@ -292,7 +292,7 @@ public class Tests<T extends Comparable> {
 //    public void toStringItCheck() {
 //        for (int i = 0; i < 5; i++) {
 //            int length = randInt(0, maxRandomSize);
-//            FiniteSet fs = randomFiniteSet(length);
+//            MultiSet fs = randomMultiSet(length);
 //            System.out.println("Sequencing Output: " + fs.toStringIt());
 //        }
 //    }

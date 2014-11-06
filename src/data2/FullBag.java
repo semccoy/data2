@@ -2,36 +2,36 @@ package data2;
 
 import java.util.Random;
 
-public class FullSet<T extends Comparable> implements FiniteSet<T>, Sequenced<T> {
+public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> {
 
     T thing;
     int counter;
-    FiniteSet left;
-    FiniteSet right;
+    MultiSet left;
+    MultiSet right;
 
     // constructors for different possibilities
-    public FullSet(T thing) {
+    public FullBag(T thing) {
         this.thing = thing;
         this.counter = 1;
         this.left = empty();
         this.right = empty();
     }
 
-    public FullSet(T thing, int counter) {
+    public FullBag(T thing, int counter) {
         this.thing = thing;
         this.counter = counter;
         this.left = empty();
         this.right = empty();
     }
 
-    public FullSet(T thing, FiniteSet left, FiniteSet right) {
+    public FullBag(T thing, MultiSet left, MultiSet right) {
         this.thing = thing;
         this.counter = 1;
         this.left = left;
         this.right = right;
     }
 
-    public FullSet(T thing, int counter, FiniteSet left, FiniteSet right) {
+    public FullBag(T thing, int counter, MultiSet left, MultiSet right) {
         this.thing = thing;
         this.counter = counter;
         this.left = left;
@@ -39,8 +39,8 @@ public class FullSet<T extends Comparable> implements FiniteSet<T>, Sequenced<T>
     }
 
     // old methods
-    public static FiniteSet empty() {
-        return new EmptySet();
+    public static MultiSet empty() {
+        return new EmptyBag();
     }
 
     public int cardinality() {
@@ -69,52 +69,52 @@ public class FullSet<T extends Comparable> implements FiniteSet<T>, Sequenced<T>
         }
     }
 
-    public FiniteSet add(T elt) {
+    public MultiSet add(T elt) {
         // if the same just increase counter
         if (this.thing.compareTo(elt) == 0) {
-            return new FullSet(this.thing, this.counter + 1, this.left, this.right);
+            return new FullBag(this.thing, this.counter + 1, this.left, this.right);
             // if elt is larger put it on the right
         } else if (elt.compareTo(this.thing) > 0) {
-            return new FullSet(this.thing, this.counter, this.left, this.right.add(elt));
+            return new FullBag(this.thing, this.counter, this.left, this.right.add(elt));
         } else {
-            return new FullSet(this.thing, this.counter, this.left.add(elt), this.right);
+            return new FullBag(this.thing, this.counter, this.left.add(elt), this.right);
         }
     }
 
-    public FiniteSet remove(T elt) {
+    public MultiSet remove(T elt) {
         // same as add pretty much
         if (this.thing.compareTo(elt) == 0) {
-            return new FullSet(this.thing, this.counter - 1, this.left, this.right);
+            return new FullBag(this.thing, this.counter - 1, this.left, this.right);
         } else if (elt.compareTo(this.thing) > 0) {
-            return new FullSet(this.thing, this.counter, this.left, this.right.remove(elt));
+            return new FullBag(this.thing, this.counter, this.left, this.right.remove(elt));
         } else {
-            return new FullSet(this.thing, this.counter, this.left.remove(elt), this.right);
+            return new FullBag(this.thing, this.counter, this.left.remove(elt), this.right);
         }
     }
 
-    public FiniteSet union(FiniteSet u) {
+    public MultiSet union(MultiSet u) {
         return left.union(right.union(u).addSome(thing, this.getCount(thing)));
     }
 
-    public FiniteSet inter(FiniteSet u) {
+    public MultiSet inter(MultiSet u) {
         if (u.member(this.thing)) {
             int minimum = Math.min(u.getCount(thing), this.getCount(thing));
-            return new FullSet(this.thing, minimum, this.left.inter(u), this.right.inter(u));
+            return new FullBag(this.thing, minimum, this.left.inter(u), this.right.inter(u));
         } else {
             return this.left.inter(u).union(this.right.inter(u));
         }
     }
 
-    public FiniteSet diff(FiniteSet u) {
+    public MultiSet diff(MultiSet u) {
         return left.union(right).diff(u.removeSome(thing, this.getCount(thing)));
     }
 
-    public boolean equal(FiniteSet u) {
+    public boolean equal(MultiSet u) {
         // no change :)
         return (this.subset(u) && u.subset(this));
     }
 
-    public boolean subset(FiniteSet u) {
+    public boolean subset(MultiSet u) {
         return (this.getCount(thing) <= u.getCount(thing) && this.left.union(this.right).subset(u));
     }
 
@@ -129,38 +129,38 @@ public class FullSet<T extends Comparable> implements FiniteSet<T>, Sequenced<T>
         }
     }
 
-    public FiniteSet addSome(T elt, int i) {
+    public MultiSet addSome(T elt, int i) {
         // same as add except with maximum
         if (this.thing.compareTo(elt) == 0) {
             int maximum = Math.max(0, this.counter + i);
-            return new FullSet(this.thing, maximum, this.left, this.right);
+            return new FullBag(this.thing, maximum, this.left, this.right);
         } else if (elt.compareTo(this.thing) > 0) {
-            return new FullSet(this.thing, this.counter, this.left, this.right.addSome(elt, i));
+            return new FullBag(this.thing, this.counter, this.left, this.right.addSome(elt, i));
         } else {
-            return new FullSet(this.thing, this.counter, this.left.addSome(elt, i), this.right);
+            return new FullBag(this.thing, this.counter, this.left.addSome(elt, i), this.right);
         }
     }
 
-    public FiniteSet removeSome(T elt, int i) {
+    public MultiSet removeSome(T elt, int i) {
         // same as addSome pretty much
         if (this.thing.compareTo(elt) == 0) {
             int maximum = Math.max(0, this.counter - i);
-            return new FullSet(this.thing, maximum, this.left, this.right);
+            return new FullBag(this.thing, maximum, this.left, this.right);
         } else if (elt.compareTo(this.thing) > 0) {
-            return new FullSet(this.thing, this.counter, this.left, this.right.removeSome(elt, i));
+            return new FullBag(this.thing, this.counter, this.left, this.right.removeSome(elt, i));
         } else {
-            return new FullSet(this.thing, this.counter, this.left.removeSome(elt, i), this.right);
+            return new FullBag(this.thing, this.counter, this.left.removeSome(elt, i), this.right);
         }
     }
 
-    public FiniteSet removeAll(T elt) {
+    public MultiSet removeAll(T elt) {
         // like a more dramatic removeSome
         if (this.thing.compareTo(elt) == 0) {
             return left.union(right);
         } else if (elt.compareTo(this.thing) > 0) {
-            return new FullSet(this.thing, this.counter, this.left, this.right.removeAll(elt));
+            return new FullBag(this.thing, this.counter, this.left, this.right.removeAll(elt));
         } else {
-            return new FullSet(this.thing, this.counter, this.left.removeAll(elt), this.right);
+            return new FullBag(this.thing, this.counter, this.left.removeAll(elt), this.right);
         }
     }
 
