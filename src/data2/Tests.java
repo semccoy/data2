@@ -2,101 +2,271 @@ package data2;
 
 import java.util.Random;
 
-public class Tests {
+public class Tests<T extends Comparable> {
 
-    /* Random Stuff */
+    // setup
+    RandomThing<T> rt;
+
+    public Tests(RandomThing<T> rt) {
+        this.rt = rt;
+    }
+
+    public static FiniteSet empty() {
+        return new EmptySet();
+    }
+
     public static int randInt(int min, int max) {
         Random rand = new Random();
         int randomNum = rand.nextInt((max - min) + 1) + min;
         return randomNum;
     }
 
-    public static FiniteSet createFiniteSet(int size) {
+    public FiniteSet<T> randomFiniteSet(int size) {
+        // just a generic version of what we had with finite sets
         if (size == 0) {
-            return FullSet.empty();
+            return empty();
         } else {
-            return createFiniteSet(size - 1).add(randInt(0, 50));
+            return randomFiniteSet(size - 1).addSome(rt.makeRandom(), randInt(1, maxRandomSize));
         }
     }
 
-    /* Testing */
-    //if cardinality is 0, u must be empty; if not, u must not be empty
-    public static void isEmptyHuhCardCheck(FiniteSet u) {
-        if (u.cardinality() == 0) {
-            if (u.isEmptyHuh()) {
-                //System.out.println("Success - isEmptyHuhCardCheck");
+    // tests
+    int repeats = 100;
+    int maxRandomSize = 10;
+
+    public void isEmptyHuhCardCheck(int x) throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            if (x == 0) {
+                FiniteSet fs = empty();
+                if (!fs.isEmptyHuh()) {
+                    throw new Exception("isEmptyHuhCardCheck - empty bag failure");
+                }
             } else {
-                System.out.println("Failure - isEmptyHuhCardCheck");
+                int length = randInt(1, maxRandomSize);
+                FiniteSet fs = randomFiniteSet(length);
+                if (fs.isEmptyHuh()) {
+                    throw new Exception("isEmptyHuhCardCheck - full bag failure");
+                }
             }
-        } else if (!u.isEmptyHuh()) {
-            // System.out.println("Success - isEmptyHuhCardCheck");
-        } else {
-            System.out.println("Failure - isEmptyHuhCardCheck");
         }
     }
 
-    //adding things makes cardinality go up by however many things were added
-    public static void cardAddCheck(int elt) {
-        FiniteSet tree = new EmptySet();
-        for (int i = 0; i < elt; i++) {
-            tree = tree.add(i);
-        }
-        if (tree.cardinality() == elt) {
-            // System.out.println("Success - cardAddCheck");
-        } else {
-            System.out.println("Failure - cardAddCheck");
-        }
-    }
-
-    //removing an elt from u results in a <= cardinality
-    public static void removeCardCheck(FiniteSet u) {
-        int elt = randInt(0, 100);
-        FiniteSet smaller = u.remove(elt);
-        if (smaller.cardinality() <= u.cardinality()) {
-            // System.out.println("Success - removeCardCheck");
-        } else {
-            System.out.println("Failure - removeCardCheck");
+    public void cardAddCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs = randomFiniteSet(length);
+            int init = fs.cardinality();
+            if (fs.add(rt.makeRandom()).cardinality() != init + 1) {
+                throw new Exception("cardAddCheck - card increase failure");
+            } else if (fs.add(rt.makeRandom()).cardinality() == init) {
+                throw new Exception("cardAddCheck - adding thing failure");
+            }
         }
     }
 
-    //if some number is not in one set but in another that's just
-    //the first set + the number, adding things to sets works properly!
-    //note that x MUST be outside the range of possible values of u
-    //else may fail
-    public static void addMemberCheck(FiniteSet u) {
-        int x = randInt(4200, 4300);
-        FiniteSet uPlus = u.add(x);
-        if (!u.member(x) && uPlus.member(x)) {
-            //  System.out.println("Success - addMemberCheck");
-        } else {
-            System.out.println("Failure - addMemberCheck");
+    public void cardAddSomeCheck(int x) throws Exception {
+        // mostly a check that add/removeSome functions work, really just same as above
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs = randomFiniteSet(length);
+            int initialCard = fs.cardinality();
+            if (fs.addSome(rt.makeRandom(), x).cardinality() != initialCard + x) {
+                throw new Exception("cardAddSomeCheck - card increase failure");
+            } else if (fs.addSome(rt.makeRandom(), x).cardinality() == initialCard) {
+                throw new Exception("cardAddSomeCheck - adding things failure");
+            }
         }
     }
 
-    //unions of (sub)sets are transitive
-    public static void unionSubsetCheck(FiniteSet u, FiniteSet v, FiniteSet w) {
-        if ((u.union(v)).subset(w)
-                == (u.subset(w) && v.subset(w))) {
-            //  System.out.println("Success - unionSubsetCheck");
-        } else {
-            System.out.println("Failure - unionSubsetCheck");
+    public void cardRemoveCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            T randomThing = rt.makeRandom();
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs = randomFiniteSet(length);
+            int endCard = fs.remove(randomThing).cardinality();
+            if (fs.getCount(randomThing) >= 1 && endCard != fs.cardinality() - 1) {
+                throw new Exception("cardRemoveCheck - card decrease failure");
+            }
+            if (fs.getCount(randomThing) == 0 && endCard != fs.cardinality()) {
+                throw new Exception("cardRemoveCheck - card no change failure");
+            }
         }
     }
 
-    //adding things to sets is transitive
-    public static void unionMemberCheck(FiniteSet u, FiniteSet v) {
-        int elt = randInt(0, 100);
-        FiniteSet s1 = u.add(elt);
-        FiniteSet s2 = v.add(elt);
-        FiniteSet x1 = (s1.union(v));
-        FiniteSet x2 = (s2.union(u));
-        if (x1.member(elt) && x2.member(elt)) {
-            //  System.out.println("Success - unionMemberCheck");
-        } else {
-            System.out.println("Failure - unionMemberCheck");
+    public void cardEmptyCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs = randomFiniteSet(length);
+            if (fs.isEmptyHuh() && fs.cardinality() != 0) {
+                throw new Exception("cardEmptyCheck - empty bag has card ≠ 0");
+            } else if (!fs.isEmptyHuh() && fs.cardinality() == 0) {
+                throw new Exception("cardEmptyCheck - full bag has card = 0");
+            }
         }
     }
 
+    public void addMemberCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            T randomThing = rt.makeRandom();
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs = randomFiniteSet(length);
+            fs.add(randomThing);
+            if (fs.getCount(randomThing) >= 1 && !fs.member(randomThing)) {
+                throw new Exception("addMemberCheck - thing not added but counter increase");
+            }
+            if (fs.getCount(randomThing) == 0 && fs.member(randomThing)) {
+                throw new Exception("addMemberCheck - thing added but counter not increase");
+            }
+        }
+    }
+
+    public void addRemoveEqualCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            T randomThing = rt.makeRandom();
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs = randomFiniteSet(length);
+            FiniteSet fsPlus = fs.add(randomThing);
+            FiniteSet fsMinus = fsPlus.remove(randomThing);
+            if (fsPlus.getCount(randomThing) - 1 != fs.getCount(randomThing)) {
+                throw new Exception("addRemoveEqualCheck - counter not increase after adding thing");
+            }
+            if (fsMinus.getCount(randomThing) != fs.getCount(randomThing)) {
+                throw new Exception("addRemoveEqualCheck - counter not restored about removing added thing");
+            }
+            if (!fs.equal(fsMinus)) {
+                throw new Exception("addRemoveEqualCheck - bag not returned to original state");
+            }
+        }
+    }
+
+    public void addRemoveSomeEqualCheck(int x) throws Exception {
+        // again, just a check to see if add/removeSome work, otherwise same as above
+        for (int i = 0; i < repeats; i++) {
+            T randomThing = rt.makeRandom();
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs = randomFiniteSet(length);
+            FiniteSet fsPlus = fs.addSome(randomThing, x);
+            FiniteSet fsMinus = fsPlus.removeSome(randomThing, x);
+            // maybe - x + 1?
+            if (fsPlus.getCount(randomThing) - x != fs.getCount(randomThing)) {
+                throw new Exception("addRemoveSomeEqualCheck - counter not increase after adding things");
+            }
+            if (fsMinus.getCount(randomThing) != fs.getCount(randomThing)) {
+                throw new Exception("addRemoveSomeEqualCheck - counter not restored about removing added things");
+            }
+            if (!fs.equal(fsMinus)) {
+                throw new Exception("addRemoveSomeEqualCheck - bag not returned to original state");
+            }
+        }
+    }
+
+    public void unionSubsetCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs1 = randomFiniteSet(length);
+            FiniteSet fs2 = randomFiniteSet(length);
+            // could reverse order of these
+            if (!fs1.subset(fs1.union(fs2)) || !fs2.subset(fs1.union(fs2))) {
+                throw new Exception("unionSubsetCheck - one bag not subset of two bags' union");
+            }
+        }
+    }
+
+    public void unionCardCheck() throws Exception {
+        // this sounds like something state employees have to do :(
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs1 = randomFiniteSet(length);
+            FiniteSet fs2 = randomFiniteSet(length);
+            // strictly greater than because fs1 and fs2 can be mutually exclusive to start
+            if (fs1.union(fs2).cardinality() > fs1.cardinality() + fs2.cardinality()) {
+                throw new Exception("unionCardCheck - card not adding properly");
+            }
+        }
+    }
+
+    public void unionMemberCheck() throws Exception {
+        // this one does too...
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            T randomThing = rt.makeRandom();
+            FiniteSet fs1 = randomFiniteSet(length);
+            FiniteSet fs2 = randomFiniteSet(length);
+            FiniteSet fs1Plus = fs1.add(randomThing);
+            FiniteSet fs2Plus = fs2.add(randomThing);
+            FiniteSet u1 = (fs1Plus.union(fs2Plus));
+            FiniteSet u2 = (fs2Plus.union(fs1Plus));
+            if (!u1.member(randomThing) && !u2.member(randomThing)) {
+                throw new Exception("unionMemberCheck - unions not membering properly");
+            }
+        }
+    }
+
+    public void memberRemoveAllCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            T randomThing = rt.makeRandom();
+            int length = randInt(0, maxRandomSize);
+            int randomInt = randInt(0, 10);
+            FiniteSet fs1 = randomFiniteSet(length);
+            FiniteSet fs2 = fs1.addSome(randomThing, randomInt);
+            if (fs2.removeAll(randomThing).member(randomThing)) {
+                throw new Exception("memberRemoveAllCheck - thing in bag that was removeAlled");
+            }
+            if (fs2.removeAll(randomThing).getCount(randomThing) != 0) {
+                throw new Exception("memberRemoveAllCheck - thing appeared more than zero times");
+            }
+        }
+    }
+
+    public void diffMemberCheck() throws Exception {
+        // check to see if the bags got... dismembered (*rimshot*)
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs1 = randomFiniteSet(length);
+            FiniteSet fs2 = randomFiniteSet(length);
+            T randomThing = rt.makeRandom();
+            if (fs1.diff(fs2).member(randomThing)) {
+                if (!fs1.member(randomThing)) {
+                    throw new Exception("diffMemberCheck - thing not put in bag correctly");
+                }
+            }
+        }
+    }
+
+    public void equalIntercheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs1 = randomFiniteSet(length);
+            FiniteSet fs2 = randomFiniteSet(length);
+            if (fs1.union(fs2).equal(fs1.inter(fs2)) && !fs1.equal(fs2)) {
+                throw new Exception("equalIntercheck - inter and equal of two different bags can't be the same");
+            }
+        }
+    }
+
+    // c/o bryce - mostly just checking to see how these work :)
+    
+    public void countItCardCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs = randomFiniteSet(length);
+            if (fs.countIt() != fs.cardinality()) {
+                throw new Exception("countItCardCheck - countIt ≠ card");
+            }
+        }
+    }
+
+    public void toStringItCheck() {
+        for (int i = 0; i < 5; i++) {
+            int length = randInt(0, maxRandomSize);
+            FiniteSet fs = randomFiniteSet(length);
+            System.out.println("Sequencing Output: " + fs.toStringIt());
+        }
+    }
+
+    ////////////
+    
+    
     //the intersection of 2 sets cannot be empty if 
     //both of those 2 sets contain the thing
     public static void memberInterCheck(FiniteSet u, FiniteSet v, int elt) {
