@@ -83,14 +83,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
     }
 
     public MultiSet<T> remove(T elt) {
-        // same as add pretty much
-        if (this.thing.compareTo(elt) == 0) {
-            return new FullBag(this.thing, this.counter - 1, this.left, this.right);
-        } else if (elt.compareTo(this.thing) > 0) {
-            return new FullBag(this.thing, this.counter, this.left, this.right.remove(elt));
-        } else {
-            return new FullBag(this.thing, this.counter, this.left.remove(elt), this.right);
-        }
+        return this.removeSome(elt, 1);
     }
 
     public MultiSet<T> union(MultiSet u) {
@@ -136,7 +129,12 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
 
     public MultiSet<T> removeSome(T elt, int i) {
         if (this.thing.compareTo(elt) == 0) {
-            return new FullBag(this.thing, this.counter - i, this.left, this.right);
+            // prevents from removing negative
+            if ((this.counter - i) < 0) {
+                return this.left.union(this.right);
+            } else {
+                return new FullBag(this.thing, this.counter - i, this.left, this.right);
+            }
         } else if (elt.compareTo(this.thing) > 0) {
             return new FullBag(this.thing, this.counter, this.left, this.right.removeSome(elt, i));
         } else {
