@@ -244,25 +244,25 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         }
     }
 
-    public boolean helper1() {
-
-        if (this.isRed && (this.left.isRedHuh() || this.right.isRedHuh())) {
-            return false;
-        } else {
-            return this.left.helper1() && this.right.helper1();
-        }
-    }
-
-    public int pathCounter() {
-        if (Math.random() > .5) {
-            if (!this.isRedHuh()) {
-                return 1 + this.left.pathCounter();
-            }
-            return this.left.pathCounter();
-        }
-        if (!this.isRedHuh()) {
-            return 1 + this.right.pathCounter();
-        }
-        return this.right.pathCounter();
-    }
+//    public boolean helper1() {
+//
+//        if (this.isRed && (this.left.isRedHuh() || this.right.isRedHuh())) {
+//            return false;
+//        } else {
+//            return this.left.helper1() && this.right.helper1();
+//        }
+//    }
+//
+//    public int pathCounter() {
+//        if (Math.random() > .5) {
+//            if (!this.isRedHuh()) {
+//                return 1 + this.left.pathCounter();
+//            }
+//            return this.left.pathCounter();
+//        }
+//        if (!this.isRedHuh()) {
+//            return 1 + this.right.pathCounter();
+//        }
+//        return this.right.pathCounter();
+//    }
 }

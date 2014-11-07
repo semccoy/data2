@@ -86,11 +86,13 @@ public class Data2 {
             stringy.isRedHuhBlackenCheck();
             booly.isRedHuhBlackenCheck();
 
-            inty.balanceCheck();
-            stringy.balanceCheck();
-            booly.balanceCheck();
+            // ideally I want a method that explicity checks whether the trees
+            // produced are balanced, but the one I have right now doesn't do that
+//            inty.balanceCheck();
+//            stringy.balanceCheck();
+//            booly.balanceCheck();
 
-//            // these are for visualizing sequences - thanks again to bryce :)
+//          // these are for visualizing sequences - thanks again to bryce :)
 //            inty.countItCardCheck();
 //            stringy.countItCardCheck();
 //

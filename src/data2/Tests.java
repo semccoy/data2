@@ -304,29 +304,28 @@ public class Tests<T extends Comparable> {
         }
     }
 
-    public void balanceCheck() throws Exception {
-        for (int i = 0; i < repeats; i++) {
-            MultiSet theBag = new EmptyBag();
-            for (int j = 0; j < maxRandomSize; j++) {
-                theBag = theBag.add(randInt(1, 100));
-            }
-            boolean helper2 = true;
-            int arbitraryBCount = theBag.pathCounter();
-            for (int j = 0; j < maxRandomSize; j++) {
-                if (arbitraryBCount != theBag.pathCounter()) {
-                    helper2 = false;
-                }
-            }
-            System.out.println("" + theBag.helper1());
-            System.out.println("" + helper2);
-            if (!theBag.helper1() || !helper2) {
-                throw new Exception("balanceCheck - tree imbalanced");
-            }
-        }
-
-    }
-}
-
+//    public void balanceCheck() throws Exception {
+//        for (int i = 0; i < repeats; i++) {
+//            MultiSet theBag = new EmptyBag();
+//            for (int j = 0; j < maxRandomSize; j++) {
+//                theBag = theBag.add(randInt(1, 100));
+//            }
+//            boolean helper2 = true;
+//            int arbitraryBCount = theBag.pathCounter();
+//            for (int j = 0; j < maxRandomSize; j++) {
+//                if (arbitraryBCount != theBag.pathCounter()) {
+//                    helper2 = false;
+//                }
+//            }
+//            System.out.println("" + theBag.helper1());
+//            System.out.println("" + helper2);
+//            if (!theBag.helper1() || !helper2) {
+//               throw new Exception("balanceCheck - tree imbalanced");
+//            }
+//        }
+//
+//    }
+//
 //    // these are just for visualizing sequences
 //    // c/o bryce - mostly just checking to see how these work :)
 //    public void countItCardCheck() throws Exception {

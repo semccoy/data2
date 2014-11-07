@@ -112,11 +112,11 @@ public class EmptyBag<T extends Comparable> implements MultiSet<T>, Sequenced<T>
         return new EmptyBag();
     }
 
-    public boolean helper1() {
-        return true;
-    }
-
-    public int pathCounter() {
-        return 1;
-    }
+//    public boolean helper1() {
+//        return true;
+//    }
+//
+//    public int pathCounter() {
+//        return 1;
+//    }
 }

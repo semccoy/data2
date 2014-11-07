@@ -48,8 +48,8 @@ public interface MultiSet<T extends Comparable> extends Sequenced<T> {
 
     public MultiSet<T> balance();
 
-    public boolean helper1();
-
-    public int pathCounter();
+//    public boolean helper1();
+//
+//    public int pathCounter();
 
 }
