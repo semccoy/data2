@@ -81,10 +81,14 @@ public class Data2 {
             inty.equalIntercheck();
             stringy.equalIntercheck();
             booly.equalIntercheck();
-            
+
             inty.isRedHuhBlackenCheck();
             stringy.isRedHuhBlackenCheck();
             booly.isRedHuhBlackenCheck();
+
+            inty.balanceCheck();
+            stringy.balanceCheck();
+            booly.balanceCheck();
 
 //            // these are for visualizing sequences - thanks again to bryce :)
 //            inty.countItCardCheck();
@@ -93,6 +97,7 @@ public class Data2 {
 //            inty.toStringItCheck();
 //            stringy.toStringItCheck();
         }
+
         System.out.println("");
         System.out.println("The following tests each passed " + adNauseum * Tests.repeats + " times");
         System.out.println(" over Integers, Strings, and Booleans! :)");
@@ -114,6 +119,7 @@ public class Data2 {
         System.out.println("diffEqualCheck()");
         System.out.println("equalIntercheck()");
         System.out.println("isRedHuhBlackenCheck()");
+        System.out.println("balanceCheck()");
         System.out.println("");
     }
 }

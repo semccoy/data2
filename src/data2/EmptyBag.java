@@ -3,13 +3,13 @@ package data2;
 public class EmptyBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> {
 
     boolean isRed;
-    
+
     // constructors
     public void EmptyBag() {
         this.isRed = isRed;
     }
-    
-     public void EmptyBag(boolean isRed){
+
+    public void EmptyBag(boolean isRed) {
         this.isRed = isRed;
     }
 
@@ -78,39 +78,45 @@ public class EmptyBag<T extends Comparable> implements MultiSet<T>, Sequenced<T>
     public Sequence<T> seq() {
         return new EmptySeq();
     }
-    
+
     // others
-    public int countIt(){
+    public int countIt() {
         return 0;
     }
-    
+
     public String toStringIt() {
         return toStringIts(this.seq());
     }
-    
-    public String toStringIts(Sequence<T> as){
+
+    public String toStringIts(Sequence<T> as) {
         return "";
     }
-    
+
     // rb tree
-    
-   public MultiSet<T> blacken(){
+    public MultiSet<T> blacken() {
         return this;
     }
-  
+
 //    public Bag balance(){
 //        return new EmptyBag();
 //    }
-  
-    public MultiSet<T> addInner(T elt, int i){
+    public MultiSet<T> addInner(T elt, int i) {
         return new FullBag(elt, i);
     }
-    
+
     public boolean isRedHuh() {
         return isRed;
     }
 
     public MultiSet<T> balance() {
         return new EmptyBag();
+    }
+
+    public boolean helper1() {
+        return true;
+    }
+
+    public int pathCounter() {
+        return 1;
     }
 }
