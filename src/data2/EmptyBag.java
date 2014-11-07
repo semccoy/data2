@@ -113,4 +113,8 @@ public class EmptyBag<T extends Comparable> implements MultiSet<T>, Sequenced<T>
     public boolean isRedHuh() {
         return isRed;
     }
+
+    public MultiSet<T> balance() {
+        return new EmptyBag();
+    }
 }

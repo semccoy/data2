@@ -79,15 +79,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
     }
 
     public MultiSet<T> add(T elt) {
-        // if the same just increase counter
-        if (this.thing.compareTo(elt) == 0) {
-            return new FullBag(this.thing, this.counter + 1, this.left, this.right);
-            // if elt is larger put it on the right
-        } else if (elt.compareTo(this.thing) > 0) {
-            return new FullBag(this.thing, this.counter, this.left, this.right.add(elt));
-        } else {
-            return new FullBag(this.thing, this.counter, this.left.add(elt), this.right);
-        }
+        return addSome(elt, 1);
     }
 
     public MultiSet<T> remove(T elt) {
@@ -139,22 +131,12 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
     }
 
     public MultiSet<T> addSome(T elt, int i) {
-        // same as add except with maximum
-        if (this.thing.compareTo(elt) == 0) {
-            int maximum = Math.max(0, this.counter + i);
-            return new FullBag(this.thing, maximum, this.left, this.right);
-        } else if (elt.compareTo(this.thing) > 0) {
-            return new FullBag(this.thing, this.counter, this.left, this.right.addSome(elt, i));
-        } else {
-            return new FullBag(this.thing, this.counter, this.left.addSome(elt, i), this.right);
-        }
+        return this.addInner(elt, i).blacken();
     }
 
     public MultiSet<T> removeSome(T elt, int i) {
-        // same as addSome pretty much
         if (this.thing.compareTo(elt) == 0) {
-            int maximum = Math.max(0, this.counter - i);
-            return new FullBag(this.thing, maximum, this.left, this.right);
+            return new FullBag(this.thing, this.counter - i, this.left, this.right);
         } else if (elt.compareTo(this.thing) > 0) {
             return new FullBag(this.thing, this.counter, this.left, this.right.removeSome(elt, i));
         } else {
@@ -216,11 +198,13 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
 
     public MultiSet<T> addInner(T elt, int i) {
         if (elt.compareTo(this.thing) == 0) {
-            return new FullBag(this.thing, this.counter + i, this.isRed, this.left, this.right);
+            return new FullBag(this.thing, this.counter + i, true, this.left, this.right);
         } else if (elt.compareTo(this.thing) < 0) {
-            return new FullBag(this.thing, this.counter, this.isRed, this.left.addInner(elt, i), this.right).balance();
+            MultiSet tempBag = new FullBag(this.thing, this.counter, true, ((MultiSet) this.left).addInner(elt, i), this.right);
+            return tempBag.balance();
         } else {
-            return new FullBag(this.thing, this.counter, this.isRed, this.left, this.right.addInner(elt, i)).balance();
+            MultiSet tempBag = new FullBag(this.thing, this.counter, true, this.left, this.right.addInner(elt, i));
+            return tempBag.balance();
         }
     }
 
@@ -229,7 +213,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
     }
 
     // refer to: https://lh5.googleusercontent.com/-vFblLq5ooAc/VFgPtnU-tSI/AAAAAAAAAI4/E09IMdDCFz0/s1600/20141103_165446.jpg
-    private MultiSet<T> balance() {
+    public MultiSet<T> balance() {
         FullBag left;
         FullBag leftOfLeft;
         FullBag leftOfRight;
@@ -298,8 +282,4 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
             return this;
         }
     }
-
 }
-
-
-// can i get rid of all the this.es?

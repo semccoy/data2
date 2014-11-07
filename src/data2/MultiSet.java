@@ -48,5 +48,7 @@ public interface MultiSet<T extends Comparable> extends Sequenced<T> {
     
     public boolean isRedHuh();
     
+    public MultiSet<T> balance();
+    
     
 }
