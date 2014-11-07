@@ -1,12 +1,23 @@
 package data2;
 
+/**
+ * Full (non-empty) sequence
+ * @param <T> A generic type object
+ * @see Sequence
+ * @see Sequenced
+ */
 public class FullSeq<T extends Comparable> implements Sequence<T>, Sequenced<T> {
 
     T thing;
     int counter;
     Sequence<T> nextThing;
 
-    // so we can use this down below and in FullBag
+    /**
+     * Constructor that takes a node, a counter, and a sequence to create a sequence
+     * @param thing A generic type object
+     * @param counter An integer detailing node's counter
+     * @param nextThing A sequence
+     */
     FullSeq(T thing, int counter, Sequence<T> nextThing) {
         this.thing = thing;
         this.counter = counter;

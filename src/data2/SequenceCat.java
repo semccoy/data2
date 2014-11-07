@@ -1,11 +1,21 @@
 package data2;
 
+/**
+ * Sequence for combining other sequences
+ * @param <T> A generic type object
+ * @see Sequence
+ */
 public class SequenceCat<T extends Comparable> implements Sequence<T> {
     // for combining sequences!
 
     Sequence<T> left;
     Sequence<T> right;
 
+    /**
+     * Constructor that takes two sequences to combine them
+     * @param left A sequence
+     * @param right A sequence
+     */
     SequenceCat(Sequence lefty, Sequence righty) {
         this.left = lefty;
         this.right = righty;

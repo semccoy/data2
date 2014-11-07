@@ -2,6 +2,10 @@ package data2;
 
 import java.util.Random;
 
+/**
+ * Yields a random string
+ * @see RandomThing
+ */
 public class RandomString implements RandomThing<String> {
 
     int maxLength = 20;

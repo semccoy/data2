@@ -1,6 +1,16 @@
 package data2;
 
+/**
+ * Interface housing method for random type production classes
+ * @see RandomBoolean
+ * @see RandomInteger
+ * @see RandomString
+ */
 public interface RandomThing<T extends Comparable> {
-    // convenient way to house all classes that produce random generics
+
+    /**
+     * Generates a random object
+     * @return T a random object
+     */
     public T makeRandom();
 }

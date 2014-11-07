@@ -2,6 +2,10 @@ package data2;
 
 import java.util.Random;
 
+/**
+ * Yields a random integer
+ * @see RandomThing
+ */
 public class RandomInteger implements RandomThing<Integer> {
 
     int min = 0;

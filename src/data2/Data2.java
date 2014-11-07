@@ -2,6 +2,10 @@ package data2;
 
 import static data2.Tests.*;
 
+/**
+ * Testing class
+ * @see Tests
+ */
 public class Data2 {
 
     public static void main(String[] args) throws Exception {

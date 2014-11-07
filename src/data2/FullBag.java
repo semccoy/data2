@@ -3,6 +3,8 @@ package data2;
 /**
  * Full (non-empty) MultiSet bag
  * @param <T> A generic type object
+ * @see MultiSet
+ * @see Sequenced
  */
 public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> {
 

@@ -2,6 +2,11 @@ package data2;
 
 import java.util.Random;
 
+/**
+ * Testing methods for bags, sequences, and balancing of red-black trees
+ * @param <T> A generic type object 
+ * @see Data2
+ */
 public class Tests<T extends Comparable> {
 
     // setup

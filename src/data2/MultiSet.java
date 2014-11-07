@@ -1,10 +1,11 @@
 package data2;
 
 /**
- * Interface that houses all methods for MultiSet bags
+ * Interface housing methods for MultiSet bags
  * @param <T> A generic type object
  * @see EmptyBag
  * @see FullBag
+ * @see Sequenced
  */
 public interface MultiSet<T extends Comparable> extends Sequenced<T> {
 

@@ -1,5 +1,9 @@
 package data2;
 
+/**
+ * Yields a random boolean
+ * @see RandomThing
+ */
 public class RandomBoolean implements RandomThing<Boolean> {
 
     public Boolean makeRandom() {

@@ -3,6 +3,8 @@ package data2;
 /**
  * Empty MultiSet bag
  * @param <T> A generic type object
+ * @see MultiSet
+ * @see Sequenced
  */
 public class EmptyBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> {
 
@@ -10,6 +12,7 @@ public class EmptyBag<T extends Comparable> implements MultiSet<T>, Sequenced<T>
 
     /**
      * Constructor that sets up empty bag
+     * @see EmptyBag (below)
      */
     public void EmptyBag() {
         this.isRed = isRed;

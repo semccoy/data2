@@ -1,5 +1,10 @@
 package data2;
 
+/**
+ * Empty sequence
+ * @param <T> A generic type object
+ * @see Sequence
+ */
 public class EmptySeq<T extends Comparable> implements Sequence<T> {
 
     public T here() {
