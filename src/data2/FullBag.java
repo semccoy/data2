@@ -122,6 +122,9 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
     }
 
     public MultiSet<T> removeSome(T elt, int i) {
+        // doesn't need a call to balance because removeSome calls union,
+        // and union calls addSome, and addSome calls addInner,
+        // and addInner calls balance!
         if (this.thing.compareTo(elt) == 0) {
             // prevents from removing negative
             if ((this.counter - i) < 0) {
@@ -195,7 +198,6 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
 
     // refer to: https://lh5.googleusercontent.com/-vFblLq5ooAc/VFgPtnU-tSI/AAAAAAAAAI4/E09IMdDCFz0/s1600/20141103_165446.jpg
     public MultiSet<T> balance() {
-
         if (!this.isRedHuh() && this.left instanceof FullBag && ((FullBag) this.left).left instanceof FullBag
                 && ((FullBag) this.left).isRedHuh() && ((FullBag) ((FullBag) this.left).left).isRedHuh()) {
 

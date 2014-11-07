@@ -81,6 +81,10 @@ public class Data2 {
             inty.equalIntercheck();
             stringy.equalIntercheck();
             booly.equalIntercheck();
+            
+            inty.isRedHuhBlackenCheck();
+            stringy.isRedHuhBlackenCheck();
+            booly.isRedHuhBlackenCheck();
 
 //            // these are for visualizing sequences - thanks again to bryce :)
 //            inty.countItCardCheck();
@@ -109,6 +113,7 @@ public class Data2 {
         System.out.println("diffMemberCheck()");
         System.out.println("diffEqualCheck()");
         System.out.println("equalIntercheck()");
+        System.out.println("isRedHuhBlackenCheck()");
         System.out.println("");
     }
 }

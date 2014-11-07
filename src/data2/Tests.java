@@ -120,7 +120,7 @@ public class Tests<T extends Comparable> {
             }
         }
     }
-    
+
     public void addMemberInterCheck() throws Exception {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
@@ -250,9 +250,6 @@ public class Tests<T extends Comparable> {
         }
     }
 
-
-
-
     public void diffEqualCheck() throws Exception {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
@@ -265,8 +262,8 @@ public class Tests<T extends Comparable> {
             }
         }
     }
-    
-        public void equalIntercheck() throws Exception {
+
+    public void equalIntercheck() throws Exception {
         for (int i = 0; i < repeats; i++) {
             int length = randInt(0, maxRandomSize);
             MultiSet fs1 = randomMultiSet(length);
@@ -276,6 +273,48 @@ public class Tests<T extends Comparable> {
             }
         }
     }
+
+    public void isRedHuhBlackenCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            T randomThing = rt.makeRandom();
+            int counter = 1;
+            MultiSet left = empty();
+            MultiSet right = empty();
+
+            //random every time!
+            boolean isRed = randInt(0, 1) == 0;
+
+            MultiSet fs = new FullBag(randomThing, counter, isRed, left, right);
+            MultiSet fsb = fs.blacken();
+
+            if (isRed) {
+                // if red thing is actually black, it should be black instead
+                if (!fs.isRedHuh()) {
+                    throw new Exception("isRedHuhCheck - red thing should be black");
+                } // if black thing is actually red, it should be red instead
+                else if (fsb.isRedHuh()) {
+                    throw new Exception("isRedHuhCheck - black thing should be red");
+                }
+            } else {
+                // if black thing is actually red, it should be red instead
+                if (fs.isRedHuh()) {
+                    throw new Exception("isRedHuhCheck - black thing should be red");
+                }
+            }
+        }
+    }
+
+    public void balanceCheck() throws Exception {
+        for (int i = 0; i < repeats; i++) {
+            int length = randInt(0, maxRandomSize);
+            MultiSet fs1 = randomMultiSet(length);
+            //...
+            
+            throw new Exception("balanceCheck - tree imbalanced");
+        }
+    }
+
+}
 
 //    // these are just for visualizing sequences
 //    // c/o bryce - mostly just checking to see how these work :)
