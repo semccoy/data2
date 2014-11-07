@@ -44,8 +44,6 @@ public interface MultiSet<T extends Comparable> extends Sequenced<T> {
     
     public MultiSet<T> addInner(T elt, int i);
     
-    public MultiSet<T> rbInsert(T elt, int i);
-    
     public boolean isRedHuh();
     
     public MultiSet<T> balance();

@@ -6,7 +6,9 @@ public class RandomString implements RandomThing<String> {
 
     int maxLength = 20;
 
-    String stringThings = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    // can put whatever you want in the input string
+    // (and doesn't require knowledge of unicode)
+    String stringThings = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890`~!@#$%^&*()-_=+[{]}|;:',<.>/?";
     Random rand = new Random();
 
     public String makeRandom() {

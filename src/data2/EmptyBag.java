@@ -106,10 +106,6 @@ public class EmptyBag<T extends Comparable> implements MultiSet<T>, Sequenced<T>
         return new FullBag(elt, i);
     }
     
-    public MultiSet<T> rbInsert(T elt, int i) {
-        return this.addInner(elt, i).blacken();
-    }
-    
     public boolean isRedHuh() {
         return isRed;
     }

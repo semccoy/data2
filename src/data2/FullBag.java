@@ -137,21 +137,14 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
     }
 
     public MultiSet<T> removeAll(T elt) {
-        // like a more dramatic removeSome
-        if (this.thing.compareTo(elt) == 0) {
-            return left.union(right);
-        } else if (elt.compareTo(this.thing) > 0) {
-            return new FullBag(this.thing, this.counter, this.left, this.right.removeAll(elt));
-        } else {
-            return new FullBag(this.thing, this.counter, this.left.removeAll(elt), this.right);
-        }
+        return removeSome(elt, this.getCount(elt));
     }
 
     public Sequence<T> seq() {
         return new FullSeq(thing, counter, (new SequenceCat(this.left.seq(), this.right.seq())));
     }
 
-    // others
+    // for visualizing sequences
     public int countIt() {
         return countItS(this.seq());
     }
@@ -200,77 +193,55 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         }
     }
 
-    public MultiSet<T> rbInsert(T elt, int i) {
-        return this.addInner(elt, i).blacken();
-    }
-
     // refer to: https://lh5.googleusercontent.com/-vFblLq5ooAc/VFgPtnU-tSI/AAAAAAAAAI4/E09IMdDCFz0/s1600/20141103_165446.jpg
     public MultiSet<T> balance() {
-        FullBag left;
-        FullBag leftOfLeft;
-        FullBag leftOfRight;
-        FullBag right;
-        FullBag rightOfLeft;
-        FullBag rightOfRight;
 
-        // I. if black and everything else is a full bag
-        // then put leftOfLeft to the left of the original left,
-        // and put the node on the right of the original left
-        if ((!this.isRedHuh() && (this.left instanceof FullBag) && (((FullBag) this.left).left instanceof FullBag)
-                && ((FullBag) this.left).isRedHuh() && ((FullBag) this.left).left.isRedHuh())) {
+        if (!this.isRedHuh() && this.left instanceof FullBag && ((FullBag) this.left).left instanceof FullBag
+                && ((FullBag) this.left).isRedHuh() && ((FullBag) ((FullBag) this.left).left).isRedHuh()) {
 
-            left = ((FullBag) this.left);
-            leftOfLeft = ((FullBag) left.left);
+            FullBag L1 = ((FullBag) this.left);
+            FullBag L2 = ((FullBag) L1.left);
 
-            return new FullBag(left.thing, left.counter, true,
-                    new FullBag(leftOfLeft.thing, leftOfLeft.counter, false, leftOfLeft.left, leftOfLeft.right),
-                    new FullBag(this.thing, this.counter, false, leftOfLeft.right, this.right));
+            //System.out.println("Case 1");
+            return new FullBag(L1.thing, L1.counter, true,
+                    new FullBag(L2.thing, L2.counter, false, L2.left, L2.right),
+                    new FullBag(this.thing, this.counter, false, L1.right, this.right));
 
-            // II. if black and everything else is a full bag
-            // then make rightOfLeft the new node,
-            // and put original node on the right of rightOfLeft,
-            // keeping left where it was
-        } else if ((!this.isRedHuh() && (this.left instanceof FullBag) && (((FullBag) this.left).right instanceof FullBag)
-                && ((FullBag) this.left).isRedHuh() && ((FullBag) this.left).right.isRedHuh())) {
+        } else if (!this.isRedHuh() && this.left instanceof FullBag && ((FullBag) this.left).right instanceof FullBag
+                && ((FullBag) this.left).isRedHuh() && ((FullBag) ((FullBag) this.left).right).isRedHuh()) {
 
-            left = ((FullBag) this.left);
-            leftOfLeft = ((FullBag) left.left);
-            rightOfLeft = ((FullBag) left.right);
+            FullBag L1 = ((FullBag) this.left);
+            FullBag LR = ((FullBag) L1.right);
 
-            return new FullBag(rightOfLeft.thing, rightOfLeft.counter, true,
-                    new FullBag(left.thing, left.counter, false, leftOfLeft, rightOfLeft.left),
-                    new FullBag(this.thing, this.counter, false, rightOfLeft.right, this.right));
+            //System.out.println("Case 2");
+            return new FullBag(LR.thing, LR.counter, true,
+                    new FullBag(L1.thing, L1.counter, false, L1.left, LR.left),
+                    new FullBag(this.thing, this.counter, false, LR.right, this.right));
 
-            // III. (I. in reverse) if black and everything else is a full bag
-            // then put rightOfRight to the right of the original right
-            // and put the node on the left of the original right
-        } else if ((!this.isRedHuh() && (this.right instanceof FullBag) && (((FullBag) this.right).left instanceof FullBag)
-                && ((FullBag) this.right).isRedHuh() && ((FullBag) this.right).left.isRedHuh())) {
+        } else if (!this.isRedHuh() && this.right instanceof FullBag && ((FullBag) this.right).left instanceof FullBag
+                && ((FullBag) this.right).isRedHuh() && ((FullBag) ((FullBag) this.right).left).isRedHuh()) {
 
-            right = ((FullBag) this.right);
-            rightOfRight = ((FullBag) right.right);
+            FullBag R1 = ((FullBag) this.right);
+            FullBag RL = ((FullBag) R1.left);
 
-            return new FullBag(rightOfRight.thing, rightOfRight.counter, true,
-                    new FullBag(this.thing, this.counter, false, this.left, rightOfRight.left),
-                    new FullBag(right.thing, right.counter, false, rightOfRight.right, right.right));
+            //System.out.println("Case 3");
+            return new FullBag(RL.thing, RL.counter, true,
+                    new FullBag(this.thing, this.counter, false, this.left, RL.left),
+                    new FullBag(R1.thing, R1.counter, false, RL.right, R1.right));
 
-            // IV. (II. in reverse) if black and everything else is a full bag
-            // then make leftOfRight the new node,
-            // and put original node on the left of leftOfRight,
-            // keeping right where it was
-        } else if ((!this.isRedHuh() && (this.right instanceof FullBag) && (((FullBag) this.right).right instanceof FullBag)
-                && ((FullBag) this.right).isRedHuh() && ((FullBag) this.right).right.isRedHuh())) {
+        } else if (!this.isRedHuh() && this.right instanceof FullBag && ((FullBag) this.right).right instanceof FullBag
+                && ((FullBag) this.right).isRedHuh() && ((FullBag) ((FullBag) this.right).right).isRedHuh()) {
 
-            right = ((FullBag) this.right);
-            rightOfRight = ((FullBag) right.right);
-            leftOfRight = ((FullBag) right.left);
+            FullBag R1 = ((FullBag) this.right);
+            FullBag R2 = ((FullBag) R1.right);
 
-            return new FullBag(right.thing, right.counter, true,
-                    new FullBag(this.thing, this.counter, false, this.left, leftOfRight),
-                    new FullBag(rightOfRight.thing, rightOfRight.counter, false, rightOfRight.left, rightOfRight.right));
-            // V. do nothing
-            // aw yiss
+            //System.out.println("Case 4");
+            return new FullBag(R1.thing, R1.counter, true,
+                    new FullBag(this.thing, this.counter, false, this.left, R1.left),
+                    new FullBag(R2.thing, R2.counter, false, R2.left, R2.right));
+
         } else {
+            //System.out.println("Case 5");
             return this;
         }
     }
