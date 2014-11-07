@@ -8,6 +8,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
     int counter;
     MultiSet left;
     MultiSet right;
+    boolean isRed;
 
     // constructors for different possibilities
     public FullBag(T thing) {
@@ -34,6 +35,14 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
     public FullBag(T thing, int counter, MultiSet left, MultiSet right) {
         this.thing = thing;
         this.counter = counter;
+        this.left = left;
+        this.right = right;
+    }
+
+    public FullBag(T thing, int counter, boolean isRed, MultiSet<T> left, MultiSet<T> right) {
+        this.thing = thing;
+        this.counter = counter;
+        this.isRed = isRed;
         this.left = left;
         this.right = right;
     }
@@ -69,7 +78,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         }
     }
 
-    public MultiSet add(T elt) {
+    public MultiSet<T> add(T elt) {
         // if the same just increase counter
         if (this.thing.compareTo(elt) == 0) {
             return new FullBag(this.thing, this.counter + 1, this.left, this.right);
@@ -81,7 +90,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         }
     }
 
-    public MultiSet remove(T elt) {
+    public MultiSet<T> remove(T elt) {
         // same as add pretty much
         if (this.thing.compareTo(elt) == 0) {
             return new FullBag(this.thing, this.counter - 1, this.left, this.right);
@@ -92,11 +101,11 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         }
     }
 
-    public MultiSet union(MultiSet u) {
+    public MultiSet<T> union(MultiSet u) {
         return left.union(right.union(u).addSome(thing, this.getCount(thing)));
     }
 
-    public MultiSet inter(MultiSet u) {
+    public MultiSet<T> inter(MultiSet u) {
         if (u.member(this.thing)) {
             int minimum = Math.min(u.getCount(thing), this.getCount(thing));
             return new FullBag(this.thing, minimum, this.left.inter(u), this.right.inter(u));
@@ -105,7 +114,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         }
     }
 
-    public MultiSet diff(MultiSet u) {
+    public MultiSet<T> diff(MultiSet u) {
         return left.union(right).diff(u.removeSome(thing, this.getCount(thing)));
     }
 
@@ -129,7 +138,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         }
     }
 
-    public MultiSet addSome(T elt, int i) {
+    public MultiSet<T> addSome(T elt, int i) {
         // same as add except with maximum
         if (this.thing.compareTo(elt) == 0) {
             int maximum = Math.max(0, this.counter + i);
@@ -141,7 +150,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         }
     }
 
-    public MultiSet removeSome(T elt, int i) {
+    public MultiSet<T> removeSome(T elt, int i) {
         // same as addSome pretty much
         if (this.thing.compareTo(elt) == 0) {
             int maximum = Math.max(0, this.counter - i);
@@ -153,7 +162,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         }
     }
 
-    public MultiSet removeAll(T elt) {
+    public MultiSet<T> removeAll(T elt) {
         // like a more dramatic removeSome
         if (this.thing.compareTo(elt) == 0) {
             return left.union(right);
@@ -168,7 +177,6 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         return new FullSeq(thing, counter, (new SequenceCat(this.left.seq(), this.right.seq())));
     }
 
-    
     // others
     public int countIt() {
         return countItS(this.seq());
@@ -195,6 +203,100 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
             as = as.next();
         }
         return string.toString();
+    }
+
+    // rb tree
+    public MultiSet<T> blacken() {
+        return new FullBag(this.thing, this.counter, false, this.left, this.right);
+    }
+
+    public boolean isRedHuh() {
+        return isRed;
+    }
+
+    public MultiSet<T> addInner(T elt, int i) {
+        if (elt.compareTo(this.thing) == 0) {
+            return new FullBag(this.thing, this.counter + i, this.isRed, this.left, this.right);
+        } else if (elt.compareTo(this.thing) < 0) {
+            return new FullBag(this.thing, this.counter, this.isRed, this.left.addInner(elt, i), this.right).balance();
+        } else {
+            return new FullBag(this.thing, this.counter, this.isRed, this.left, this.right.addInner(elt, i)).balance();
+        }
+    }
+
+    public MultiSet<T> rbInsert(T elt, int i) {
+        return this.addInner(elt, i).blacken();
+    }
+
+    // refer to: https://lh5.googleusercontent.com/-vFblLq5ooAc/VFgPtnU-tSI/AAAAAAAAAI4/E09IMdDCFz0/s1600/20141103_165446.jpg
+    private MultiSet<T> balance() {
+        FullBag left;
+        FullBag leftOfLeft;
+        FullBag leftOfRight;
+        FullBag right;
+        FullBag rightOfLeft;
+        FullBag rightOfRight;
+
+        // I. if black and everything else is a full bag
+        // then put leftOfLeft to the left of the original left,
+        // and put the node on the right of the original left
+        if ((!this.isRedHuh() && (this.left instanceof FullBag) && (((FullBag) this.left).left instanceof FullBag)
+                && ((FullBag) this.left).isRedHuh() && ((FullBag) this.left).left.isRedHuh())) {
+
+            left = ((FullBag) this.left);
+            leftOfLeft = ((FullBag) left.left);
+
+            return new FullBag(left.thing, left.counter, true,
+                    new FullBag(leftOfLeft.thing, leftOfLeft.counter, false, leftOfLeft.left, leftOfLeft.right),
+                    new FullBag(this.thing, this.counter, false, leftOfLeft.right, this.right));
+
+            // II. if black and everything else is a full bag
+            // then make rightOfLeft the new node,
+            // and put original node on the right of rightOfLeft,
+            // keeping left where it was
+        } else if ((!this.isRedHuh() && (this.left instanceof FullBag) && (((FullBag) this.left).right instanceof FullBag)
+                && ((FullBag) this.left).isRedHuh() && ((FullBag) this.left).right.isRedHuh())) {
+
+            left = ((FullBag) this.left);
+            leftOfLeft = ((FullBag) left.left);
+            rightOfLeft = ((FullBag) left.right);
+
+            return new FullBag(rightOfLeft.thing, rightOfLeft.counter, true,
+                    new FullBag(left.thing, left.counter, false, leftOfLeft, rightOfLeft.left),
+                    new FullBag(this.thing, this.counter, false, rightOfLeft.right, this.right));
+
+            // III. (I. in reverse) if black and everything else is a full bag
+            // then put rightOfRight to the right of the original right
+            // and put the node on the left of the original right
+        } else if ((!this.isRedHuh() && (this.right instanceof FullBag) && (((FullBag) this.right).left instanceof FullBag)
+                && ((FullBag) this.right).isRedHuh() && ((FullBag) this.right).left.isRedHuh())) {
+
+            right = ((FullBag) this.right);
+            rightOfRight = ((FullBag) right.right);
+
+            return new FullBag(rightOfRight.thing, rightOfRight.counter, true,
+                    new FullBag(this.thing, this.counter, false, this.left, rightOfRight.left),
+                    new FullBag(right.thing, right.counter, false, rightOfRight.right, right.right));
+
+            // IV. (II. in reverse) if black and everything else is a full bag
+            // then make leftOfRight the new node,
+            // and put original node on the left of leftOfRight,
+            // keeping right where it was
+        } else if ((!this.isRedHuh() && (this.right instanceof FullBag) && (((FullBag) this.right).right instanceof FullBag)
+                && ((FullBag) this.right).isRedHuh() && ((FullBag) this.right).right.isRedHuh())) {
+
+            right = ((FullBag) this.right);
+            rightOfRight = ((FullBag) right.right);
+            leftOfRight = ((FullBag) right.left);
+
+            return new FullBag(right.thing, right.counter, true,
+                    new FullBag(this.thing, this.counter, false, this.left, leftOfRight),
+                    new FullBag(rightOfRight.thing, rightOfRight.counter, false, rightOfRight.left, rightOfRight.right));
+            // V. do nothing
+            // aw yiss
+        } else {
+            return this;
+        }
     }
 
 }

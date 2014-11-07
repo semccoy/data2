@@ -39,5 +39,14 @@ public interface MultiSet<T extends Comparable> extends Sequenced<T> {
 
     public String toStringIt();
 
-    // rb tree methods here
+    // rb tree
+    public MultiSet<T> blacken();
+    
+    public MultiSet<T> addInner(T elt, int i);
+    
+    public MultiSet<T> rbInsert(T elt, int i);
+    
+    public boolean isRedHuh();
+    
+    
 }
