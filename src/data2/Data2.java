@@ -121,7 +121,6 @@ public class Data2 {
         System.out.println("diffEqualCheck()");
         System.out.println("equalIntercheck()");
         System.out.println("isRedHuhBlackenCheck()");
-        System.out.println("balanceCheck()");
         System.out.println("");
     }
 }
