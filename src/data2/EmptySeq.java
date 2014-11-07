@@ -4,6 +4,7 @@ package data2;
  * Empty sequence
  * @param <T> A generic type object
  * @see Sequence
+ * Performance: O(n)
  */
 public class EmptySeq<T extends Comparable> implements Sequence<T> {
 

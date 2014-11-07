@@ -5,6 +5,7 @@ package data2;
  * @param <T> A generic type object
  * @see MultiSet
  * @see Sequenced
+ * Performance: O(log n)
  */
 public class EmptyBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> {
 

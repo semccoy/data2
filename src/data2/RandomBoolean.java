@@ -3,6 +3,7 @@ package data2;
 /**
  * Yields a random boolean
  * @see RandomThing
+ * Performance: O(n)
  */
 public class RandomBoolean implements RandomThing<Boolean> {
 

@@ -5,6 +5,7 @@ package data2;
  * @param <T> A generic type object
  * @see Sequence
  * @see Sequenced
+ * Performance: O(n)
  */
 public class FullSeq<T extends Comparable> implements Sequence<T>, Sequenced<T> {
 

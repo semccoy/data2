@@ -3,6 +3,7 @@ package data2;
 /**
  * Interface housing method to sequence objects
  * @param <T> A generic type object
+ * Performance: O(n)
  */
 public interface Sequenced<T extends Comparable> {
 

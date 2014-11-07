@@ -6,6 +6,7 @@ import java.util.Random;
  * Testing methods for bags, sequences, and balancing of red-black trees
  * @param <T> A generic type object 
  * @see Data2
+ * Performance: O(n)
  */
 public class Tests<T extends Comparable> {
 

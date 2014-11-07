@@ -5,7 +5,14 @@ import static data2.Tests.*;
 /**
  * Testing class
  * @see Tests
+ * 
+ * Performance for this program should be as follows:
+ *      Bags: best/average/worst case (assuming balancing works) = O(log n)
+ *      Interfaces: best/average/worst case = O(n)
+ *      Everything else: should be O(n) time as well
  */
+
+
 public class Data2 {
 
     public static void main(String[] args) throws Exception {

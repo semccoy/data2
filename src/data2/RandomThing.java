@@ -5,6 +5,7 @@ package data2;
  * @see RandomBoolean
  * @see RandomInteger
  * @see RandomString
+ * Performance: O(n)
  */
 public interface RandomThing<T extends Comparable> {
 

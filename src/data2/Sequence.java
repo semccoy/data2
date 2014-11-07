@@ -7,6 +7,7 @@ package data2;
  * @see FullSeq
  * @see SequenceCat
  * @see Sequenced
+ * Performance: O(n)
  */
 public interface Sequence<T extends Comparable> {
 

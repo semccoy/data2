@@ -4,6 +4,7 @@ package data2;
  * Sequence for combining other sequences
  * @param <T> A generic type object
  * @see Sequence
+ * Performance: O(n)
  */
 public class SequenceCat<T extends Comparable> implements Sequence<T> {
     // for combining sequences!

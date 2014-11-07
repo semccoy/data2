@@ -5,6 +5,7 @@ import java.util.Random;
 /**
  * Yields a random integer
  * @see RandomThing
+ * Performance: O(n)
  */
 public class RandomInteger implements RandomThing<Integer> {
 
