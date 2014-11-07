@@ -69,13 +69,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
     }
 
     public boolean member(T elt) {
-        if (this.thing.compareTo(elt) == 0) {
-            return this.counter > 0;
-        } else if (this.thing.compareTo(elt) > 0) {
-            return left.member(elt);
-        } else {
-            return right.member(elt);
-        }
+        return this.getCount(elt) != 0;
     }
 
     public MultiSet<T> add(T elt) {
