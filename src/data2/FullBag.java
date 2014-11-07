@@ -1,7 +1,5 @@
 package data2;
 
-import java.util.Random;
-
 public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> {
 
     T thing;
@@ -188,11 +186,9 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         if (elt.compareTo(this.thing) == 0) {
             return new FullBag(this.thing, this.counter + i, true, this.left, this.right);
         } else if (elt.compareTo(this.thing) < 0) {
-            MultiSet tempBag = new FullBag(this.thing, this.counter, true, ((MultiSet) this.left).addInner(elt, i), this.right);
-            return tempBag.balance();
+            return new FullBag(this.thing, this.counter, true, ((MultiSet) this.left).addInner(elt, i), this.right).balance();
         } else {
-            MultiSet tempBag = new FullBag(this.thing, this.counter, true, this.left, this.right.addInner(elt, i));
-            return tempBag.balance();
+            return new FullBag(this.thing, this.counter, true, this.left, this.right.addInner(elt, i)).balance();
         }
     }
 
@@ -249,7 +245,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
     }
 
     public boolean helper1() {
-       
+
         if (this.isRed && (this.left.isRedHuh() || this.right.isRedHuh())) {
             return false;
         } else {
