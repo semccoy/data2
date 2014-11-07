@@ -1,5 +1,9 @@
 package data2;
 
+/**
+ * Full (non-empty) MultiSet bag
+ * @param <T> A generic type object
+ */
 public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> {
 
     T thing;
@@ -8,7 +12,10 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
     MultiSet right;
     boolean isRed;
 
-    // constructors for different possibilities
+    /**
+     * Constructor that takes a node to set up a full bag
+     * @param thing A generic type object
+     */
     public FullBag(T thing) {
         this.thing = thing;
         this.counter = 1;
@@ -16,6 +23,11 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         this.right = empty();
     }
 
+    /**
+     * Constructor that takes a node and counter to set up a full bag
+     * @param thing A generic type object
+     * @param counter An integer detailing node's counter
+     */
     public FullBag(T thing, int counter) {
         this.thing = thing;
         this.counter = counter;
@@ -23,6 +35,12 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         this.right = empty();
     }
 
+    /**
+     * Constructor that takes a node and two leaves to set up a full bag
+     * @param thing A generic type object
+     * @param left A MultiSet to the left of the node
+     * @param right A MultiSet to the right of the node
+     */
     public FullBag(T thing, MultiSet left, MultiSet right) {
         this.thing = thing;
         this.counter = 1;
@@ -30,6 +48,13 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         this.right = right;
     }
 
+    /**
+     * Constructor that takes a node, counter, and two leaves to set up a full bag
+     * @param thing A generic type object
+     * @param counter An integer detailing node's counter
+     * @param left A MultiSet to the left of the node
+     * @param right A MultiSet to the right of the node
+     */
     public FullBag(T thing, int counter, MultiSet left, MultiSet right) {
         this.thing = thing;
         this.counter = counter;
@@ -37,6 +62,14 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
         this.right = right;
     }
 
+    /**
+     * Constructor that takes a node, counter, and two leaves to set up a full bag
+     * @param thing A generic type object
+     * @param counter An integer detailing node's counter
+     * @pararm isRed Boolean detailing color of node
+     * @param left A MultiSet to the left of the node
+     * @param right A MultiSet to the right of the node
+     */
     public FullBag(T thing, int counter, boolean isRed, MultiSet<T> left, MultiSet<T> right) {
         this.thing = thing;
         this.counter = counter;
@@ -200,7 +233,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
             FullBag L1 = ((FullBag) this.left);
             FullBag L2 = ((FullBag) L1.left);
 
-            //System.out.println("Case 1");
+            // case 1
             return new FullBag(L1.thing, L1.counter, true,
                     new FullBag(L2.thing, L2.counter, false, L2.left, L2.right),
                     new FullBag(this.thing, this.counter, false, L1.right, this.right));
@@ -211,7 +244,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
             FullBag L1 = ((FullBag) this.left);
             FullBag LR = ((FullBag) L1.right);
 
-            //System.out.println("Case 2");
+            // case 2
             return new FullBag(LR.thing, LR.counter, true,
                     new FullBag(L1.thing, L1.counter, false, L1.left, LR.left),
                     new FullBag(this.thing, this.counter, false, LR.right, this.right));
@@ -222,7 +255,7 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
             FullBag R1 = ((FullBag) this.right);
             FullBag RL = ((FullBag) R1.left);
 
-            //System.out.println("Case 3");
+            // case 3
             return new FullBag(RL.thing, RL.counter, true,
                     new FullBag(this.thing, this.counter, false, this.left, RL.left),
                     new FullBag(R1.thing, R1.counter, false, RL.right, R1.right));
@@ -233,13 +266,13 @@ public class FullBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> 
             FullBag R1 = ((FullBag) this.right);
             FullBag R2 = ((FullBag) R1.right);
 
-            //System.out.println("Case 4");
+            // case 4
             return new FullBag(R1.thing, R1.counter, true,
                     new FullBag(this.thing, this.counter, false, this.left, R1.left),
                     new FullBag(R2.thing, R2.counter, false, R2.left, R2.right));
 
         } else {
-            //System.out.println("Case 5");
+            // case 5
             return this;
         }
     }

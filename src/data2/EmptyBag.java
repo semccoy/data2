@@ -1,14 +1,24 @@
 package data2;
 
+/**
+ * Empty MultiSet bag
+ * @param <T> A generic type object
+ */
 public class EmptyBag<T extends Comparable> implements MultiSet<T>, Sequenced<T> {
 
     boolean isRed;
 
-    // constructors
+    /**
+     * Constructor that sets up empty bag
+     */
     public void EmptyBag() {
         this.isRed = isRed;
     }
 
+    /**
+     * Constructor that sets up empty bag with predetermined color
+     * @param isRed A boolean detailing the bag's color
+     */
     public void EmptyBag(boolean isRed) {
         this.isRed = isRed;
     }
@@ -97,9 +107,6 @@ public class EmptyBag<T extends Comparable> implements MultiSet<T>, Sequenced<T>
         return this;
     }
 
-//    public Bag balance(){
-//        return new EmptyBag();
-//    }
     public MultiSet<T> addInner(T elt, int i) {
         return new FullBag(elt, i);
     }

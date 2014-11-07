@@ -189,17 +189,17 @@ public interface MultiSet<T extends Comparable> extends Sequenced<T> {
      */
     public MultiSet<T> balance();
 
-    /**
-     * Returns false if red-black tree has two red nodes connected
-     * Example: difficult to show
-     * @return Boolean that is false if red nodes touch and otherwise true
-     */
-    public boolean helper1();
-
-    /**
-     * Returns depth of red-black tree along a path
-     * Example treeOfDepthFour.pathCounter() = 4
-     * @return Integer detailing depth of tree along designated path
-     */
-    public int pathCounter();
+//    /**
+//     * Returns false if red-black tree has two red nodes connected
+//     * Example: difficult to show
+//     * @return Boolean that is false if red nodes touch and otherwise true
+//     */
+//    public boolean helper1();
+//
+//    /**
+//     * Returns depth of red-black tree along a path
+//     * Example treeOfDepthFour.pathCounter() = 4
+//     * @return Integer detailing depth of tree along designated path
+//     */
+//    public int pathCounter();
 }
