@@ -6,6 +6,7 @@ package data2;
  * @see EmptyBag
  * @see FullBag
  * @see Sequenced
+ * Performance - Best: logarithmic O(log n) - Worst: linear O(n)
  */
 public interface MultiSet<T extends Comparable> extends Sequenced<T> {
 
